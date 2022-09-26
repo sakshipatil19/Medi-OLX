@@ -32,4 +32,8 @@ def home():
     medicine = Medicines.query.filter_by().all()[0:3]
     return render_template('index.html', params = params, medicine = medicine)
 
+@app.route("/medicine", methods=['GET', 'POST'])
+def medicine():
+    medicine = Medicines.query.filter_by().all()
+    return render_template('shop.html', params=params, medicine=medicine)
 app.run(debug = True)

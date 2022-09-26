@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Pharma &mdash; Colorlib Template</title>
+  <title>Medi-OLX</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -40,13 +40,14 @@
         <div class="d-flex align-items-center justify-content-between">
           <div class="logo">
             <div class="site-logo">
-              <a href="index.html" class="js-logo-clone">Pharma</a>
+              {% set fname = 'images/' + params['logo'] %}
+              <a href="/" class="js-logo-clone"> <img src="{{url_for('static', filename = fname)}}" alt=""> </a>
             </div>
           </div>
           <div class="main-nav d-none d-lg-block">
             <nav class="site-navigation text-right text-md-center" role="navigation">
               <ul class="site-menu js-clone-nav d-none d-lg-block">
-                <li class="active"><a href="index.html">Home</a></li>
+                <li class="active"><a href="/">Home</a></li>
                 <li><a href="shop.html">Store</a></li>
                 <li class="has-children">
                   <a href="#">Dropdown</a>
@@ -83,8 +84,8 @@
         </div>
       </div>
     </div>
-
-    <div class="site-blocks-cover" style="background-image: url('images/hero_1.jpg');">
+    
+    <div class="site-blocks-cover" style="background-image: url('{{url_for('static', filename = 'images/hero_1.jpg')}}');">
       <div class="container">
         <div class="row">
           <div class="col-lg-7 mx-auto order-lg-2 align-self-center">
@@ -150,13 +151,15 @@
         </div>
 
         <div class="row">
+          {% for medicine in medicine %}
+          {% set img_med = 'images/' + medicine.image %}
           <div class="col-sm-6 col-lg-4 text-center item mb-4">
             <span class="tag">Sale</span>
-            <a href="shop-single.html"> <img src="images/product_01.png" alt="Image"></a>
-            <h3 class="text-dark"><a href="shop-single.html">Bioderma</a></h3>
-            <p class="price"><del>95.00</del> &mdash; $55.00</p>
+            <a href="shop-single.html"> <img src="{{url_for('static', filename = img_med)}}" alt="Image" width=200px></a>
+            <h3 class="text-dark"><a href="shop-single.html">{{medicine.name}}</a></h3>
+            <p class="price"><del>95.00</del> &mdash; ₹{{medicine.price}}</p>
           </div>
-          <div class="col-sm-6 col-lg-4 text-center item mb-4">
+          <!-- <div class="col-sm-6 col-lg-4 text-center item mb-4">
             <a href="shop-single.html"> <img src="images/product_02.png" alt="Image"></a>
             <h3 class="text-dark"><a href="shop-single.html">Chanca Piedra</a></h3>
             <p class="price">$70.00</p>
@@ -165,8 +168,8 @@
             <a href="shop-single.html"> <img src="images/product_03.png" alt="Image"></a>
             <h3 class="text-dark"><a href="shop-single.html">Umcka Cold Care</a></h3>
             <p class="price">$120.00</p>
-          </div>
-
+          </div> -->
+          {% endfor %}
           <div class="col-sm-6 col-lg-4 text-center item mb-4">
 
             <a href="shop-single.html"> <img src="images/product_04.png" alt="Image"></a>
@@ -185,6 +188,7 @@
             <p class="price"><del>$89</del> &mdash; $38.00</p>
           </div>
         </div>
+        
         <div class="row mt-5">
           <div class="col-12 text-center">
             <a href="shop.html" class="btn btn-primary px-4 py-3">View All Products</a>

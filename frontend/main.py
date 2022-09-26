@@ -29,6 +29,7 @@ class Medicines(db.Model):
     
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template('index.html', params = params)
+    medicine = Medicines.query.filter_by().all()[0:3]
+    return render_template('index.html', params = params, medicine = medicine)
 
 app.run(debug = True)

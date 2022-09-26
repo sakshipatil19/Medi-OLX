@@ -4,7 +4,7 @@
         "local_server":"True",
         "local_uri":"mysql://root:@localhost/mediolx",
         "prod_uri":"mysql://root:@localhost/mediolx",
-        "login_img": "logo.png"
+        "logo": "logo.png"
     }
     
 }

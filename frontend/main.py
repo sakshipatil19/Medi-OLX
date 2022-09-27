@@ -26,14 +26,30 @@ class Medicines(db.Model):
     contents = db.Column(db.String(120), nullable=False)
     expiry = db.Column(db.String(12))
     image = db.Column(db.String(30))
+
+class Medi_equipment(db.Model):
+    equip_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable = False)
+    description = db.Column(db.String(150), nullable=False)
+    original_price = db.Column(db.Integer, nullable=False)
+    discounted_price = db.Column(db.Integer, nullable=False)
+    purchase_date = db.Column(db.String(12))
+    image_name = db.Column(db.String(30))
     
 @app.route("/", methods=['GET', 'POST'])
 def home():
     medicine = Medicines.query.filter_by().all()[0:3]
-    return render_template('index.html', params = params, medicine = medicine)
+    medi_equipment = Medi_equipment.query.filter_by().all()[0:3]
+    return render_template('index.html', params = params, medicine = medicine, equipment = medi_equipment)
 
 @app.route("/medicine", methods=['GET', 'POST'])
 def medicine():
     medicine = Medicines.query.filter_by().all()
     return render_template('shop.html', params=params, medicine=medicine)
+
+@app.route("/equipment", methods=['GET', 'POST'])
+def equipment():
+    medi_equipment = Medi_equipment.query.filter_by().all()
+    return render_template('shop_e.html', params=params, equipment = medi_equipment)
+
 app.run(debug = True)

@@ -111,4 +111,8 @@ def uploader():
 def about():
     return render_template("about.html", params=params)
 
+@app.route("/contact", methods = ['GET', 'POST'])
+def contact():
+    return render_template("contact.html", params=params)
+
 app.run(debug = True)

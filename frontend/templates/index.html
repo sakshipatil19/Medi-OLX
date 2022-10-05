@@ -57,55 +57,56 @@
         </div>
       </div>
     </div>
+    <main id="store">
+      <div class="site-section">
+        <div class="container">
+          <div class="row">
+            <div class="title-section text-center col-12">
+              <h2 class="text-uppercase">Medicines</h2>
+            </div>
+          </div>
 
-    <div class="site-section">
-      <div class="container">
-        <div class="row">
-          <div class="title-section text-center col-12">
-            <h2 class="text-uppercase">Medicines</h2>
+          <div class="row">
+            {% for medicine in medicine %}
+            {% set img_med = 'images/' + medicine.image %}
+            <div class="col-sm-6 col-lg-4 text-center item mb-4">
+              <a href="/medicine/{{ medicine.med_id }}"> <img src="{{url_for('static', filename = img_med)}}" alt="Image" width=200px></a>
+              <h3 class="text-dark"><a href="/medicine/{{ medicine.med_id }}">{{medicine.name}}</a></h3>
+              <p class="price"><del>₹95.00</del> &mdash; ₹{{medicine.price}}</p>
+            </div>
+            {% endfor %}
           </div>
-        </div>
-
-        <div class="row">
-          {% for medicine in medicine %}
-          {% set img_med = 'images/' + medicine.image %}
-          <div class="col-sm-6 col-lg-4 text-center item mb-4">
-            <a href="shop-single.html"> <img src="{{url_for('static', filename = img_med)}}" alt="Image" width=200px></a>
-            <h3 class="text-dark"><a href="shop-single.html">{{medicine.name}}</a></h3>
-            <p class="price"><del>₹95.00</del> &mdash; ₹{{medicine.price}}</p>
+          <div class="row mt-5">
+            <div class="col-12 text-center">
+              <a href="/medicine" class="btn btn-primary px-4 py-3">View All Products</a>
+            </div>
           </div>
-          {% endfor %}
-        </div>
-        <div class="row mt-5">
-          <div class="col-12 text-center">
-            <a href="/medicine" class="btn btn-primary px-4 py-3">View All Products</a>
+          <br>
+          <br>
+          <div class="row">
+            <div class="title-section text-center col-12">
+              <h2 class="text-uppercase">Equipments</h2>
+            </div>
           </div>
-        </div>
-        <br>
-        <br>
-        <div class="row">
-          <div class="title-section text-center col-12">
-            <h2 class="text-uppercase">Equipments</h2>
+          <div class="row">
+            {% for equipments in equipment %}
+            {% set img_equip = 'images/' + equipments.image_name %}
+            <div class="col-sm-6 col-lg-4 text-center item mb-4">
+              <a href="/equipment/{{ equipments.equip_id }}"> <img src="{{url_for('static', filename = img_equip)}}" alt="Image" width=200px></a>
+              <h3 class="text-dark"><a href="/equipment/{{ equipments.equip_id }}">{{equipments.name}}</a></h3>
+              <p class="price"><del>₹{{equipments.original_price}}</del> &mdash; ₹{{equipments.discounted_price}}</p>
+            </div>
+            {% endfor %}
           </div>
-        </div>
-        <div class="row">
-          {% for equipments in equipment %}
-          {% set img_equip = 'images/' + equipments.image_name %}
-          <div class="col-sm-6 col-lg-4 text-center item mb-4">
-            <a href="shop-single.html"> <img src="{{url_for('static', filename = img_equip)}}" alt="Image" width=200px></a>
-            <h3 class="text-dark"><a href="shop-single.html">{{equipments.name}}</a></h3>
-            <p class="price"><del>₹{{equipments.original_price}}</del> &mdash; ₹{{equipments.discounted_price}}</p>
-          </div>
-          {% endfor %}
-        </div>
-        
-        <div class="row mt-5">
-          <div class="col-12 text-center">
-            <a href="/equipment" class="btn btn-primary px-4 py-3">View All Products</a>
+          
+          <div class="row mt-5">
+            <div class="col-12 text-center">
+              <a href="/equipment" class="btn btn-primary px-4 py-3">View All Products</a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </main>
 
     
     <div class="site-section bg-light">

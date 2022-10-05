@@ -4,7 +4,8 @@
         "local_server":"True",
         "local_uri":"mysql://root:@localhost/mediolx",
         "prod_uri":"mysql://root:@localhost/mediolx",
-        "logo": "logo.png"
+        "logo": "logo.png",
+        "upload_location": "C:\\Users\\bhowm\\OneDrive\\Desktop\\3rd Year\\Mini Project\\Project 5\\Medi-OLX\\frontend\\static\\images"
     }
     
 }

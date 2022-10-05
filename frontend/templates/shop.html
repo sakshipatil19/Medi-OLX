@@ -30,8 +30,8 @@
           {% for medicine in medicine %}
           {% set img_med = 'images/' + medicine.image %}
           <div class="col-sm-6 col-lg-4 text-center item mb-4">
-            <a href="shop-single.html"> <img src="{{url_for('static', filename = img_med)}}" alt="Image" width=200px></a>
-            <h3 class="text-dark"><a href="shop-single.html">{{medicine.name}}</a></h3>
+            <a href="/medicine/{{ medicine.med_id }}"> <img src="{{url_for('static', filename = img_med)}}" alt="Image" width=200px></a>
+            <h3 class="text-dark"><a href="/medicine/{{ medicine.med_id }}">{{medicine.name}}</a></h3>
             <p class="price"><del>95.00</del> &mdash; ₹{{medicine.price}}</p>
           </div>
           {% endfor %}

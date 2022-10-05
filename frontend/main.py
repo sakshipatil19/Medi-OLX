@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, session, redirect
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import secure_filename
+import os
 
 import json
 
@@ -9,8 +11,7 @@ with open('config.json', 'r') as c:
 local_server = True
 app = Flask(__name__)
 app.secret_key = 'super-secret-key'
-# app.config['UPLOAD_FOLDER'] = params['upload_location']
-
+app.config['UPLOAD_FOLDER'] = params['upload_location']
 if(local_server):
     app.config['SQLALCHEMY_DATABASE_URI'] = params['local_uri']
 else:
@@ -80,5 +81,30 @@ def signup():
             else:
                 return redirect('/signup')
     return render_template('signup.html', params=params)
+
+@app.route("/medicine/<int:med_id>", methods=['GET', 'POST'])
+def view_med(med_id):
+    medicine = Medicines.query.filter_by(med_id=med_id).all()
+    return render_template('shop_single.html', params = params, medicine=medicine)
+
+@app.route("/equipment/<int:equip_id>", methods=['GET', 'POST'])
+def view_e(equip_id):
+    medi_equipment = Medi_equipment.query.filter_by(equip_id=equip_id).all()
+    return render_template('shop_eq.html', params = params, medi_equipment=medi_equipment)
+
+@app.route("/sell_medi")
+def sell_medi():
+    return render_template("med_upload_seller.html", params=params)
+
+@app.route("/sell_equip")
+def sell_equip():
+    return render_template("med_equip_upload_seller.html", params=params)
+
+@app.route("/uploader", methods = ['GET', 'POST'])
+def uploader():
+    if (request.method == 'POST'):
+        f = request.files['file1']
+        f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
+        return "Uploaded Successfully"
 
 app.run(debug = True)

@@ -18,6 +18,17 @@ else:
     
 db = SQLAlchemy(app)
 
+class Users(db.Model):
+    user_ID = db.Column(db.Integer, primary_key=True)
+    user_Fname = db.Column(db.String(80), nullable = False)
+    user_Lname = db.Column(db.String(80), nullable=False)
+    UIDAI = db.Column(db.Integer, nullable=False)
+    user_add = db.Column(db.String(250), nullable=False)
+    user_Cno = db.Column(db.Integer, nullable=False)
+    user_email = db.Column(db.String(80), nullable=False)
+    user_pwd = db.Column(db.String(80), nullable=False)
+    role = db.Column(db.String(80), nullable=False)
+
 class Medicines(db.Model):
     med_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable = False)
@@ -51,5 +62,23 @@ def medicine():
 def equipment():
     medi_equipment = Medi_equipment.query.filter_by().all()
     return render_template('shop_e.html', params=params, equipment = medi_equipment)
+
+@app.route("/signup", methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        user_email = request.form.get('user_email')
+        user_pwd = request.form.get('user_pwd')
+        memb = Users.query.filter_by(user_email=user_email).first()
+        if memb:
+            if memb.user_pwd == user_pwd and memb.user_email == user_email:
+                session['user'] = memb.user_email
+                session['role'] = memb.role
+                if memb.role == "admin":
+                    return redirect('adminhome.html')
+                else:
+                    return redirect("/")
+            else:
+                return redirect('/signup')
+    return render_template('signup.html', params=params)
 
 app.run(debug = True)

@@ -107,4 +107,8 @@ def uploader():
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
         return "Uploaded Successfully"
 
+@app.route("/about", methods = ['GET', 'POST'])
+def about():
+    return render_template("about.html", params=params)
+
 app.run(debug = True)

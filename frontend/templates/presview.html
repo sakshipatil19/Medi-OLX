@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Medical Equipment Prescription</title>
+    <link
+    href=""https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap";
+    rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      .form-style-8 {
+        font-family: "Poppins", sans-serif;
+
+        width: 500px;
+        padding: 10px;
+        background: #ffffff;
+        margin: 50px auto;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.22);
+        -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.22);
+        -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.22);
+      }
+      .form-style-8 h2 {
+        background: #4641a7;
+        text-transform: uppercase;
+        font-family: "Poppins", sans-serif;
+
+        color: #797979;
+        font-size: 18px;
+        font-weight: 100;
+        padding: 20px;
+        margin: -30px -30px 30px -30px;
+      }
+      .form-style-8 input[type="text"],
+      .form-style-8 input[type="date"],
+      .form-style-8 input[type="datetime"],
+      .form-style-8 input[type="email"],
+      .form-style-8 input[type="number"],
+      .form-style-8 input[type="search"],
+      .form-style-8 input[type="time"],
+      .form-style-8 input[type="url"],
+      .form-style-8 input[type="password"],
+      .form-style-8 select {
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        outline: none;
+        display: block;
+        width: 100%;
+        padding: 3.5px;
+        border: none;
+        border-bottom: 1px solid #ddd;
+        background: transparent;
+        margin-bottom: 10px;
+        font: 16px Arial, Helvetica, sans-serif;
+        height: 45px;
+      }
+      .form-style-8 input[type="button"],
+      .form-style-8 input[type="submit"] {
+        -moz-box-shadow: inset 0px 1px 0px 0px #45d6d6;
+        -webkit-box-shadow: inset 0px 1px 0px 0px #45d6d6;
+        box-shadow: inset 0px 1px 0px 0px #45d6d6;
+        background-color: #4641a7;
+        border: 1px solid #4641a7;
+        display: inline-block;
+        cursor: pointer;
+        color: #ffffff;
+        font-family: "Poppins", sans-serif;
+
+        font-size: 14px;
+        padding: 8px 18px;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+      .form-style-8 input[type="button"]:hover,
+      .form-style-8 input[type="submit"]:hover {
+        background: linear-gradient(to bottom, #34caca 5%, #30c9c9 100%);
+        background-color: #4641a7;
+      }
+    </style>
+    <style>
+      #display-image {
+        width: 90%;
+        height: 350px;
+        border: 1px solid black;
+        background-position: center;
+        background-size: cover;
+      }
+      button {
+        display: inline-block;
+        background-color: #716bed;
+        border-radius: 10px;
+        border: 4px double #cccccc;
+        color: #eeeeee;
+        text-align: center;
+        font-size: 16px;
+        padding: 12px;
+        width: 150px;
+        transition: all 0.5s;
+        cursor: pointer;
+        margin: 5px;
+      }
+      #approve {
+        background-color: #44cc44;
+      }
+      #reject {
+        background-color: tomato;
+      }
+      button span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.5s;
+      }
+      button span:after {
+        content: "\00bb";
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+      }
+      button:hover {
+        background-color: #bebbf4;
+      }
+      button:hover span {
+        padding-right: 25px;
+      }
+      button:hover span:after {
+        opacity: 1;
+        right: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-style-8">
+      <h2 style="color: white">VIEWING THE PRESCRIPTION</h2>
+      <form>
+        <label for="1">NAME OF MEDICAL EQUIPMENT</label>
+        <input type="text" name="field1" id="1" />
+        <label for="1">DETAILS OF MEDICAL EQUIPMENT</label>
+        <input type="text" name="field1" id="1" />
+        <label for="1">MEDICAL EQUIPMENT BY</label>
+        <input type="text" name="field1" id="1" />
+      </form>
+      <br />
+      <div id="display-image"></div>
+      <br />
+      <button id="approve">
+        <span>Approve</span>
+      </button>
+      <button id="reject">
+        <span>Reject</span>
+      </button>
+      <button>
+        <span>X Close</span>
+      </button>
+    </div>
+  </body>
+</html>

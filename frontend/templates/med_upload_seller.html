@@ -120,36 +120,51 @@
   <body>
     <div class="form-style-8">
       <h2 style="color: white">ENTER DETAILS OF MEDICINE</h2>
-      <form>
+    
+      <form action="/sell_medi/add" method="post" id="form1" enctype="multipart/form-data">
         <label for="1">ENTER NAME OF MEDICINE</label>
-        <input type="text" name="field1" id="1" />
+        <input type="text" name="name" id="name" />
         <label for="2">ENTER DESCRIPTION OF MEDICINE</label>
-        <input type="text" name="field2" id="1" />
-        <label for="3">ENTER PURCHASE DATE</label>
-        <input type="date" name="field3" id="2" />
+        <input type="text" name="description" id="description" />
         <label for="4">ENTER EXPIRY DATE</label>
-        <input type="date" name="field4" id="3" />
+        <input type="date" name="expiry" id="expiry" />
         <label for="5">ENTER ORIGINAL MRP</label>
-        <input type="text" name="field5" id="4" />
-        <label for="6">ENTER ORIGINAL MRP</label>
-        <p id="d_price"></p>
-      </form>
-      <form action="/uploader" method="post" enctype="multipart/form-data">
+        <input type="text" name="original_price" id="original_price"/>
+        <button onclick="discount()">Calculate</button>
+        <br>
+        <label for="6">DISCOUNTED MRP</label>
+        <br>
+        <input type="text" name="price" id="price" readonly>
+        <label for="7">IMAGE NAME</label>
+        <input type="text" name="image" id="image" readonly>
         <input 
           type="file"
-          name="file1"
+          name="file_name"
           id="image-input"
-          accept="image/jpeg, image/png, image/jpg"
+          accept="image/jpeg, image/png, image/jpg" 
+          onchange= "getFileData()"
         />
         <div id="display-image"></div>
         <button type="submit">
           <span>Submit</span>
         </button>
-        </div>
-
-      </form>
-
       
+      </form>
+    </div>
+    <script>
+      function discount(){
+        event.preventDefault();
+        var a, c;
+        a = Number(document.getElementById("original_price").value);
+        c = a*0.6
+        document.getElementById("price").value= c;
+        }
+        function getFileData(){
+          fake_path=document.getElementById('image-input').value;
+          var a = fake_path.split("\\").pop();
+          document.getElementById("image").value = a;
+          }
+    </script>
     <script>
       const image_input = document.querySelector("#image-input");
 

@@ -7,10 +7,12 @@
           <div class="col-lg-7 mx-auto order-lg-2 align-self-center">
             <div class="site-block-cover-content text-center">
               <h2 class="sub-title">Effective Medicine, New Medicine Everyday</h2>
-              <h1>Welcome To Pharma</h1>
+              <h1>Welcome To MediOLX</h1>
+              {% for user in user %}
               <p>
-                <a href="#" class="btn btn-primary px-5 py-3">Shop Now</a>
+                <a href="#" class="btn btn-primary px-5 py-3">{{user.user_name}}</a>
               </p>
+              {% endfor %}
             </div>
           </div>
         </div>

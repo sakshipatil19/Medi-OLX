@@ -6,7 +6,8 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 
     <link rel="stylesheet" href="login-signup.css">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"><link rel="stylesheet" href="./style.css">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<link rel="stylesheet" href="{{url_for('static', filename = 'css/login-signup.css')}}">
 <script>
     function matchPassword() {
       var pw1 = document.getElementById("pwd1").value;
@@ -34,21 +35,29 @@
 
 		<div class="right">
 		<h5>Signup</h5>
+        <form action="/register" method="post">
 		<div class="inputs">
-            <input type="text" placeholder="Name" required >
+            <input type="text" placeholder="Name" name="user_name" required >
 			<br>
-			<input type="text" placeholder="Phone" required >
+			<input type="text" placeholder="Phone" name="user_Cno" required >
             <br>
-            <input type="email" placeholder="Email" required>
-			<br>
-			<input type="password" id="pwd1" placeholder="Password" required>
+            <input type="email" placeholder="Email" name="user_email" required>
+            <br>
+            <input type="text" placeholder="Address" name="user_add" required>
+            <br>
+			<input type="text" placeholder="Pin Code/Zip Code" name="user_pcode" required >
+            <br>
+            <input type="text" placeholder="Aadhar No." name="UIDAI" required>
+            <br>
+			<input type="password" id="pwd1" name="user_pwd" placeholder="Password" required>
             <br>
             <input type="password" id="pwd2" placeholder="Retype Password" required>
             
 		</div>	
 			<br>
 			<input type="submit" name="submit" id="submit" onclick="matchPassword()" class="submit" value="SUBMIT" >
-            <p>Go to <a href="login .html">Login</a></p>
+            <p>Go to <a href="/signin">Login</a></p>
+        </form>
 	</div>
     
 	

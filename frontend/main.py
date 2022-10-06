@@ -21,10 +21,10 @@ db = SQLAlchemy(app)
 
 class Users(db.Model):
     user_ID = db.Column(db.Integer, primary_key=True)
-    user_Fname = db.Column(db.String(80), nullable = False)
-    user_Lname = db.Column(db.String(80), nullable=False)
+    user_name = db.Column(db.String(80), nullable = False)
     UIDAI = db.Column(db.Integer, nullable=False)
     user_add = db.Column(db.String(250), nullable=False)
+    user_pcode = db.Column(db.Integer, nullable=False)
     user_Cno = db.Column(db.Integer, nullable=False)
     user_email = db.Column(db.String(80), nullable=False)
     user_pwd = db.Column(db.String(80), nullable=False)
@@ -33,9 +33,10 @@ class Users(db.Model):
 class Medicines(db.Model):
     med_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable = False)
+    original_price = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(150), nullable=False)
-    contents = db.Column(db.String(120), nullable=False)
+    # contents = db.Column(db.String(120), nullable=False)
     expiry = db.Column(db.String(12))
     image = db.Column(db.String(30))
 
@@ -47,12 +48,6 @@ class Medi_equipment(db.Model):
     discounted_price = db.Column(db.Integer, nullable=False)
     purchase_date = db.Column(db.String(12))
     image_name = db.Column(db.String(30))
-    
-@app.route("/", methods=['GET', 'POST'])
-def home():
-    medicine = Medicines.query.filter_by().all()[0:3]
-    medi_equipment = Medi_equipment.query.filter_by().all()[0:3]
-    return render_template('index.html', params = params, medicine = medicine, equipment = medi_equipment)
 
 @app.route("/medicine", methods=['GET', 'POST'])
 def medicine():
@@ -64,7 +59,7 @@ def equipment():
     medi_equipment = Medi_equipment.query.filter_by().all()
     return render_template('shop_e.html', params=params, equipment = medi_equipment)
 
-@app.route("/signup", methods=['GET', 'POST'])
+@app.route("/signin", methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         user_email = request.form.get('user_email')
@@ -74,13 +69,42 @@ def signup():
             if memb.user_pwd == user_pwd and memb.user_email == user_email:
                 session['user'] = memb.user_email
                 session['role'] = memb.role
+                session['name'] = memb.user_name
                 if memb.role == "admin":
                     return redirect('adminhome.html')
                 else:
                     return redirect("/")
             else:
                 return redirect('/signup')
+    return render_template('login.html', params=params)
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        user_name = request.form.get("user_name")
+        UIDAI = request.form.get("UIDAI")
+        user_add = request.form.get("user_add")
+        user_Cno = request.form.get("user_Cno")
+        user_email = request.form.get("user_email")
+        user_pcode = request.form.get("user_pcode")
+        user_pwd = request.form.get("user_pwd")
+        role = "user"
+        newreg = Users(user_name=user_name, UIDAI=UIDAI, user_add=user_add, user_Cno=user_Cno, user_email=user_email, user_pcode=user_pcode, user_pwd=user_pwd, role=role)
+        db.session.add(newreg)
+        db.session.commit()
+        return redirect("/signin")
     return render_template('signup.html', params=params)
+
+
+@app.route("/", methods=['GET', 'POST'])
+def home():
+    medicine = Medicines.query.filter_by().all()[0:3]
+    medi_equipment = Medi_equipment.query.filter_by().all()[0:3]
+    if not session.get("user"):
+        user = Users.query.filter_by(user_ID=1).all()
+    else:
+        user = Users.query.filter_by(user_email=session['user']).all()
+    return render_template('index.html', params = params, medicine = medicine, equipment = medi_equipment, user = user)
 
 @app.route("/medicine/<int:med_id>", methods=['GET', 'POST'])
 def view_med(med_id):
@@ -92,20 +116,38 @@ def view_e(equip_id):
     medi_equipment = Medi_equipment.query.filter_by(equip_id=equip_id).all()
     return render_template('shop_eq.html', params = params, medi_equipment=medi_equipment)
 
-@app.route("/sell_medi")
+@app.route("/sell_medi", methods=['GET', 'POST'])
 def sell_medi():
-    return render_template("med_upload_seller.html", params=params)
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        return render_template("med_upload_seller.html", params=params)
 
-@app.route("/sell_equip")
+@app.route("/sell_medi/add", methods=['GET', 'POST'])
+def sell_medi_add():
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        if (request.method == 'POST'):
+            name = request.form.get("name")
+            description = request.form.get("description")
+            expiry = request.form.get("expiry")
+            original_price = request.form.get("original_price")
+            price = request.form.get("price")
+            image = request.form.get("image")
+            addit = Medicines(name = name, description = description, expiry = expiry, original_price = original_price, price = price, image = image)
+            db.session.add(addit)
+            db.session.commit()
+            f = request.files['file_name']
+            f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
+            return redirect("/")
+
+@app.route("/sell_equip", methods=['GET', 'POST'])
 def sell_equip():
-    return render_template("med_equip_upload_seller.html", params=params)
-
-@app.route("/uploader", methods = ['GET', 'POST'])
-def uploader():
-    if (request.method == 'POST'):
-        f = request.files['file1']
-        f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
-        return "Uploaded Successfully"
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        return render_template("med_equip_upload_seller.html", params=params)
 
 @app.route("/about", methods = ['GET', 'POST'])
 def about():
@@ -115,4 +157,13 @@ def about():
 def contact():
     return render_template("contact.html", params=params)
 
-app.run(debug = True)
+@app.route("/logout")
+def logout():
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        session.pop('user')
+        return redirect('/')
+
+if __name__ == '__main__':
+    app.run(debug = True)

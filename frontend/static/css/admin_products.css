@@ -1,0 +1,37 @@
+*{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: large;
+    text-align: center;
+    padding: 20px;
+}
+body{
+    background: url(http://wrbbradio.org/wp-content/uploads/2016/10/grey-background-07.jpg) no-repeat center fixed;
+    background-size: cover;
+  }
+h1{
+    font-size: xx-large;
+    color: aliceblue;
+    background:  #4641a7;
+}
+.center{
+    margin-left: auto;
+    margin-right: auto;
+}
+.tab{
+    background-color: #dad8f4;
+    
+}
+button {
+    display: inline-block;
+    background-color: #716bed;
+    border-radius: 5px;
+    border: 2px double #cccccc;
+    color: #eeeeee;
+    text-align: center;
+    font-size: 15px;
+    padding: 10px;
+    width: 150px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 10px;
+  }

@@ -11,7 +11,7 @@
           <div class="col-sm-6 col-lg-4 text-center item mb-4">
             <a href="/medicine/{{ medicine.med_id }}"> <img src="{{url_for('static', filename = img_med)}}" alt="Image" width=200px></a>
             <h3 class="text-dark"><a href="/medicine/{{ medicine.med_id }}">{{medicine.name}}</a></h3>
-            <p class="price"><del>{{ medicine.original_price }}</del> &mdash; ₹{{medicine.price}}</p>
+            <p class="price"><del>₹{{ medicine.original_price }}</del> &mdash; ₹{{medicine.price}}</p>
           </div>
           {% endfor %}
         </div>

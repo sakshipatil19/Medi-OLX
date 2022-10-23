@@ -25,7 +25,7 @@
           <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
             <div class="banner-wrap bg-primary h-100">
               <a href="#" class="h-100">
-                <h5>Free <br> Shipping</h5>
+                <h5>Lorem <br> Lorem ipsum</h5>
                 <p>
                   Amet sit amet dolor
                   <strong>Lorem, ipsum dolor sit amet consectetur adipisicing.</strong>
@@ -36,7 +36,7 @@
           <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
             <div class="banner-wrap h-100">
               <a href="#" class="h-100">
-                <h5>Season <br> Sale 50% Off</h5>
+                <h5>Lorem <br> Lorem ipsum</h5>
                 <p>
                   Amet sit amet dolor
                   <strong>Lorem, ipsum dolor sit amet consectetur adipisicing.</strong>
@@ -47,7 +47,7 @@
           <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
             <div class="banner-wrap bg-warning h-100">
               <a href="#" class="h-100">
-                <h5>Buy <br> A Gift Card</h5>
+                <h5>Lorem <br> Lorem ipsum</h5>
                 <p>
                   Amet sit amet dolor
                   <strong>Lorem, ipsum dolor sit amet consectetur adipisicing.</strong>
@@ -74,7 +74,7 @@
             <div class="col-sm-6 col-lg-4 text-center item mb-4">
               <a href="/medicine/{{ medicine.med_id }}"> <img src="{{url_for('static', filename = img_med)}}" alt="Image" width=200px></a>
               <h3 class="text-dark"><a href="/medicine/{{ medicine.med_id }}">{{medicine.name}}</a></h3>
-              <p class="price"><del>₹95.00</del> &mdash; ₹{{medicine.price}}</p>
+              <p class="price"><del>₹{{ medicine.original_price }}</del> &mdash; ₹{{medicine.price}}</p>
             </div>
             {% endfor %}
           </div>
@@ -111,7 +111,7 @@
     </main>
 
     
-    <div class="site-section bg-light">
+    <!-- <div class="site-section bg-light">
       <div class="container">
         <div class="row">
           <div class="title-section text-center col-12">
@@ -150,7 +150,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="site-section">
       <div class="container">

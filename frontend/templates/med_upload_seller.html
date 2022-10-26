@@ -70,8 +70,8 @@
     </style>
     <style>
       #display-image {
-        width: 400px;
-        height: 225px;
+        width: 500px;
+        height: 325px;
         border: 1px solid black;
         background-position: center;
         background-size: cover;
@@ -128,15 +128,21 @@
         <input type="text" name="description" id="description" />
         <label for="4">ENTER EXPIRY DATE</label>
         <input type="date" name="expiry" id="expiry" />
-        <label for="5">ENTER ORIGINAL MRP</label>
-        <input type="text" name="original_price" id="original_price"/>
+        <label for="5">TOTAL/ACTUAL NO. OF TABLETS/PILLS IN STRIPS</label>
+        <input type="text" name="total_tab" id="total_tab"/>
+        <label for="6">NO. OF TABLETS YOU ARE SELLING</label>
+        <input type="text" name="no_tab" id="no_tab"/>
+        <label for="7">ENTER ORIGINAL MRP (OF WHOLE STRIP/PACKET)(IN ₹)</label>
+        <input type="text" name="original_price_all" id="original_price_all"/>
         <button onclick="discount()">Calculate</button>
         <br>
-        <label for="6">DISCOUNTED MRP</label>
-        <br>
+        <label for="8">ACTUAL MRP OF NO. OF SELLING TABLETS/PILLS (IN ₹)</label>
+        <input type="text" name="original_price" id="original_price" readonly>
+        <label for="9">DISCOUNTED MRP OF NO. OF SELLING TABLETS/PILLS (IN ₹)</label>
         <input type="text" name="price" id="price" readonly>
-        <label for="7">IMAGE NAME</label>
+        <label for="10">FRONT IMAGE NAME</label>
         <input type="text" name="image" id="image" readonly>
+        <label for="11">UPLOAD FRONT IMAGE</label> <br>
         <input 
           type="file"
           name="file_name"
@@ -144,36 +150,79 @@
           accept="image/jpeg, image/png, image/jpg" 
           onchange= "getFileData()"
         />
-        <div id="display-image"></div>
+        <div id="display-image" class="display"></div>
+        <label for="12">BACK IMAGE NAME</label>
+        <input type="text" name="image1" id="image1" readonly>
+        <label for="13">UPLOAD DETAILS/BACK IMAGE</label> <br>
+        <input 
+          type="file"
+          name="file_name1"
+          id="image-input1"
+          accept="image/jpeg, image/png, image/jpg" 
+          onchange= "getFileData1()"
+        />
+        <div id="display-image" class="display1"></div>
         <button type="submit">
           <span>Submit</span>
         </button>
       
       </form>
     </div>
+
     <script>
       function discount(){
         event.preventDefault();
-        var a, c;
-        a = Number(document.getElementById("original_price").value);
-        c = a*0.6
-        document.getElementById("price").value= c;
-        }
+        var a, b, c, d, e;
+        a = Number(document.getElementById("original_price_all").value);
+        b = Number(document.getElementById("total_tab").value);
+        c = Number(document.getElementById("no_tab").value);
+        d = (a/b)*c;
+        e = d*0.6
+        document.getElementById("original_price").value= d;
+        document.getElementById("price").value= e;
+
+        };
+      
         function getFileData(){
           fake_path=document.getElementById('image-input').value;
           var a = fake_path.split("\\").pop();
-          document.getElementById("image").value = a;
+          var b = a.split(" ").join("_")
+          document.getElementById("image").value = b;
           }
     </script>
+
+    <script>
+        function getFileData1(){
+          fake_path=document.getElementById('image-input1').value;
+          var a = fake_path.split("\\").pop();
+          var b = a.split(" ").join("_")
+          document.getElementById("image1").value = b;
+          }
+    </script>
+
     <script>
       const image_input = document.querySelector("#image-input");
-
       image_input.addEventListener("change", function () {
         const reader = new FileReader();
         reader.addEventListener("load", () => {
           const uploaded_image = reader.result;
           document.querySelector(
-            "#display-image"
+            ".display"
+          ).style.backgroundImage = `url(${uploaded_image})`;
+        });
+        reader.readAsDataURL(this.files[0]);
+      });
+    </script>
+
+    <script>
+      const image_input1 = document.querySelector("#image-input1");
+
+      image_input1.addEventListener("change", function () {
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+          const uploaded_image = reader.result;
+          document.querySelector(
+            ".display1"
           ).style.backgroundImage = `url(${uploaded_image})`;
         });
         reader.readAsDataURL(this.files[0]);

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 23, 2022 at 07:44 AM
+-- Generation Time: Oct 26, 2022 at 05:36 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.0.13
 
@@ -35,6 +35,7 @@ CREATE TABLE `medicines` (
   `description` varchar(1000) NOT NULL,
   `expiry` date NOT NULL,
   `image` varchar(50) NOT NULL,
+  `back_img` varchar(50) NOT NULL,
   `status` varchar(50) NOT NULL,
   `user_ID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -43,23 +44,23 @@ CREATE TABLE `medicines` (
 -- Dumping data for table `medicines`
 --
 
-INSERT INTO `medicines` (`med_id`, `name`, `original_price`, `price`, `description`, `expiry`, `image`, `status`, `user_ID`) VALUES
-(1, 'Naselin 0.05% Decongestant Nasal Solution 10 ml', 100, 78, 'Naselin Nasal Spray contains Oxymetazoline Hydrochloride as active ingredients. It acts as a nasal decongestant and helps in opening the blocked nostrils in infants and children.', '2024-02-13', 'naselin.jpg', 'Approved', 2),
-(2, 'Hapdco Natrum Muriaticum 6X Tablet 25 gm', 300, 256, 'Hapdco Nat. Mur. Biochemic Tablet is strongly indicated in conditions associated with anaemia. It relieves sings of fatigue and exhaustion and boosts energy levels in the body. It also reduces swelling of the neck caused due to inflammation of the gland and is strongly indication in ailments related to diabetes and hyperthyroidism.\r\n', '2023-11-24', 'Hapdco Natrun.png', 'Approved', 2),
-(3, 'Dr. Willmar Schwabe Calcarea Phosphorica 6X Tablet 20 gm', 400, 364, 'Dr Willmar Schwabe Germany Calcarea Phosphorica Biochemic Tablet is a homoeopathic remedy which is useful in growth and healing processes of bones and teeth. It helps in relieving ailments during dentition. It is also useful in the treatment of fractures and osteoporosis.', '2023-07-23', 'Dr. Willmar Schwabe.png', 'Approved', 2),
-(4, 'Pro360 100% Plant Based Vegan Collagen Builder - Unflavored 250 gm', 950, 899, 'Pro360 100% Plant-Based Collagen Builder has amla and acerola, which are both rich sources of Vitamin C and have abundant antioxidant properties, which contribute to collagen production, slowing down the ageing process and improving skin’s elasticity and firmness.', '2024-10-02', 'Pro360.png', 'Approved', 2),
-(5, 'Dolo 650 Tablet', 50, 30, 'Dolo 650 Tablet helps relieve pain and fever by blocking the release of certain chemical messengers responsible for fever and pain. It is used to treat headaches, migraine, nerve pain, toothache, sore throat, period (menstrual) pains, arthritis, muscle aches, and the common cold.', '2023-02-22', 'Dolo 650.jpg', 'Approved', 2),
-(6, 'Crocin Pain Relief Tablet', 75, 57, 'Crocin Pain Relief Tablet is a combination of two medicines used in the treatment of headache. It helps relieve headache by blocking the release of certain chemical messengers that causes headache.', '2023-06-02', 'Crocin Pain relif.jpg', 'Approved', 3),
-(9, 'Flogel Ultra Eye Drop\r\n', 380, 321, 'Flogel Ultra Eye Drop is a prescription medicine used to treat symptoms of dry eyes. It lubricates the eyes. This way it provides temporary relief from burning and discomfort caused by dry eyes. It also reduces redness and swelling of the eye.', '2024-05-09', 'Flogel Ultra Eye Drop.jpg', 'Approved', 3),
-(10, 'Soliwax -A Ear Drop', 250, 192, 'Soliwax -E Ear Drop will relieve earache promptly, and begin to emulsify and disperse the excess cerumen while exerting insecticidal, antibacterial and anti-fungal properties simultaneously.', '2025-01-05', 'Soliwax ear drop.jpg', 'Approved', 3),
-(11, 'Cremaffin Fresh Tablet', 20, 15, 'Cremaffin Fresh Tablet is a medicine used to treat constipation. It is a laxative and helps you empty your bowels. Sometimes it is used by hospitals before surgery or some internal examinations or treatments. It works by increasing the movement in the intestine.', '2023-07-01', 'Cremaffin Fresh Tablet.jpg', 'Approved', 3),
-(12, 'OneLife Omega 3-6-9 Softgels', 1400, 1249, 'OneLife Omega 3-6-9 Softgels contains flax seed for superlative heart and skin health derived from a vegetarian source. The best beauty enhancer in your arsenal is now vegetarian. It contains not just omega 3 but also has omega 6 and 9 in the balanced ratio of 4.5:1:1.7 respectively which the body can efficiently utilize. The product is made with patented technology.', '2025-04-22', 'Onelife Omega.jpg', 'Approved', 2),
-(13, 'Venusia Max Intensive Moisturizing Lotion', 660, 564, 'It is a moisturising lotion enriched with the goodness of aloe butter, shea butter, mango butter, cocoa butter and glycerine that hydrates and revitalises your skin. The cream helps to relieve dry and dull skin. It improves the skin barriers by protecting it from dirt and pollution while keeping it hydrated.', '2023-08-19', 'Venusia Max Intensive.jpg', 'Approved', 3),
-(14, 'Shelcal 500 Tablet', 150, 105, 'It helps in keeping your bones strong and prevents osteoporosis. Calcium is used for building and maintaining healthy bones.', '2023-05-20', 'Shelcal 500 Tablet.jpg', 'Approved', 2),
-(15, 'Lobun Forte Capsule', 900, 809, 'Lobun Forte Capsule contains not less than 45 billion cells of a blend of ingredietns that are used for uremic detoxification (creatinine, urea and others) and for delaying the progression of chronic kidney diseases. ', '2024-09-09', 'Lobun Forte Capsule.jpg', 'Approved', 3),
-(22, 'Crocine', 50, 30, 'Antibiotics for fever, body ache, etc', '2022-12-31', 'crocin.jpg', 'Pending...', 2),
-(24, 'Crocine', 60, 36, 'Antibiotics for fever, body ache, etc', '2022-10-30', 'crocin_tablet.jpg', 'Pending...', 3),
-(25, 'Azithromycin 250 mg', 200, 120, 'Azithromycin is used to treat certain bacterial infections, such as bronchitis; pneumonia; sexually transmitted diseases (STD); and infections of the ears, lungs, sinuses, skin, throat, and reproductive organs.', '2023-01-29', 'azithromycin.jpg', 'Pending...', 3);
+INSERT INTO `medicines` (`med_id`, `name`, `original_price`, `price`, `description`, `expiry`, `image`, `back_img`, `status`, `user_ID`) VALUES
+(1, 'Naselin 0.05% Decongestant Nasal Solution 10 ml', 100, 78, 'Naselin Nasal Spray contains Oxymetazoline Hydrochloride as active ingredients. It acts as a nasal decongestant and helps in opening the blocked nostrils in infants and children.', '2024-02-13', 'naselin.jpg', '', 'Approved', 2),
+(2, 'Hapdco Natrum Muriaticum 6X Tablet 25 gm', 300, 256, 'Hapdco Nat. Mur. Biochemic Tablet is strongly indicated in conditions associated with anaemia. It relieves sings of fatigue and exhaustion and boosts energy levels in the body. It also reduces swelling of the neck caused due to inflammation of the gland and is strongly indication in ailments related to diabetes and hyperthyroidism.\r\n', '2023-11-24', 'Hapdco Natrun.png', '', 'Approved', 2),
+(3, 'Dr. Willmar Schwabe Calcarea Phosphorica 6X Tablet 20 gm', 400, 364, 'Dr Willmar Schwabe Germany Calcarea Phosphorica Biochemic Tablet is a homoeopathic remedy which is useful in growth and healing processes of bones and teeth. It helps in relieving ailments during dentition. It is also useful in the treatment of fractures and osteoporosis.', '2023-07-23', 'Dr. Willmar Schwabe.png', '', 'Approved', 2),
+(4, 'Pro360 100% Plant Based Vegan Collagen Builder - Unflavored 250 gm', 950, 899, 'Pro360 100% Plant-Based Collagen Builder has amla and acerola, which are both rich sources of Vitamin C and have abundant antioxidant properties, which contribute to collagen production, slowing down the ageing process and improving skin’s elasticity and firmness.', '2024-10-02', 'Pro360.png', '', 'Approved', 2),
+(5, 'Dolo 650 Tablet', 50, 30, 'Dolo 650 Tablet helps relieve pain and fever by blocking the release of certain chemical messengers responsible for fever and pain. It is used to treat headaches, migraine, nerve pain, toothache, sore throat, period (menstrual) pains, arthritis, muscle aches, and the common cold.', '2023-02-22', 'Dolo 650.jpg', '', 'Approved', 2),
+(6, 'Crocin Pain Relief Tablet', 75, 57, 'Crocin Pain Relief Tablet is a combination of two medicines used in the treatment of headache. It helps relieve headache by blocking the release of certain chemical messengers that causes headache.', '2023-06-02', 'Crocin Pain relif.jpg', '', 'Approved', 3),
+(9, 'Flogel Ultra Eye Drop\r\n', 380, 321, 'Flogel Ultra Eye Drop is a prescription medicine used to treat symptoms of dry eyes. It lubricates the eyes. This way it provides temporary relief from burning and discomfort caused by dry eyes. It also reduces redness and swelling of the eye.', '2024-05-09', 'Flogel Ultra Eye Drop.jpg', '', 'Approved', 3),
+(10, 'Soliwax -A Ear Drop', 250, 192, 'Soliwax -E Ear Drop will relieve earache promptly, and begin to emulsify and disperse the excess cerumen while exerting insecticidal, antibacterial and anti-fungal properties simultaneously.', '2025-01-05', 'Soliwax ear drop.jpg', '', 'Approved', 3),
+(11, 'Cremaffin Fresh Tablet', 20, 15, 'Cremaffin Fresh Tablet is a medicine used to treat constipation. It is a laxative and helps you empty your bowels. Sometimes it is used by hospitals before surgery or some internal examinations or treatments. It works by increasing the movement in the intestine.', '2023-07-01', 'Cremaffin Fresh Tablet.jpg', '', 'Approved', 3),
+(12, 'OneLife Omega 3-6-9 Softgels', 1400, 1249, 'OneLife Omega 3-6-9 Softgels contains flax seed for superlative heart and skin health derived from a vegetarian source. The best beauty enhancer in your arsenal is now vegetarian. It contains not just omega 3 but also has omega 6 and 9 in the balanced ratio of 4.5:1:1.7 respectively which the body can efficiently utilize. The product is made with patented technology.', '2025-04-22', 'Onelife Omega.jpg', '', 'Approved', 2),
+(13, 'Venusia Max Intensive Moisturizing Lotion', 660, 564, 'It is a moisturising lotion enriched with the goodness of aloe butter, shea butter, mango butter, cocoa butter and glycerine that hydrates and revitalises your skin. The cream helps to relieve dry and dull skin. It improves the skin barriers by protecting it from dirt and pollution while keeping it hydrated.', '2023-08-19', 'Venusia Max Intensive.jpg', '', 'Approved', 3),
+(14, 'Shelcal 500 Tablet', 150, 105, 'It helps in keeping your bones strong and prevents osteoporosis. Calcium is used for building and maintaining healthy bones.', '2023-05-20', 'Shelcal 500 Tablet.jpg', '', 'Approved', 2),
+(15, 'Lobun Forte Capsule', 900, 809, 'Lobun Forte Capsule contains not less than 45 billion cells of a blend of ingredietns that are used for uremic detoxification (creatinine, urea and others) and for delaying the progression of chronic kidney diseases. ', '2024-09-09', 'Lobun Forte Capsule.jpg', '', 'Approved', 3),
+(22, 'Crocine', 50, 30, 'Antibiotics for fever, body ache, etc', '2022-12-31', 'crocin.jpg', '', 'Pending...', 2),
+(24, 'Crocine', 60, 36, 'Antibiotics for fever, body ache, etc', '2022-10-30', 'crocin_tablet.jpg', '', 'Pending...', 3),
+(28, 'Angicam-Beta', 35, 21, 'Helps to reduce the blood pressure. It is a low power pill.', '2023-12-23', 'fWhatsApp_Image_2022-10-23_at_10.20.15_PM.jpeg', 'bWhatsApp_Image_2022-10-23_at_10.20.16_PM.jpeg', 'Pending...', 3);
 
 -- --------------------------------------------------------
 
@@ -73,25 +74,27 @@ CREATE TABLE `medi_equipment` (
   `description` varchar(1000) NOT NULL,
   `original_price` int(10) NOT NULL,
   `discounted_price` int(10) NOT NULL,
-  `purchase_date` date NOT NULL,
-  `image_name` varchar(50) NOT NULL
+  `image_name` varchar(50) NOT NULL,
+  `status` varchar(30) NOT NULL,
+  `user_ID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `medi_equipment`
 --
 
-INSERT INTO `medi_equipment` (`equip_id`, `name`, `description`, `original_price`, `discounted_price`, `purchase_date`, `image_name`) VALUES
-(1, 'Wheelchair', 'The wheelchair is one of the most commonly used assistive devices to promote mobility and enhance quality of life for people who have difficulties in walking (e.g. a person with spinal cord injuries resulting in quadriplegia or paraplegia, muscular dystrophy,etc). ', 8500, 5100, '2018-10-18', 'wheelchair.jpg'),
-(2, 'Stretcher', 'a light frame made from two long poles with a cover of soft material stretched between them, used for carrying people who are ill or injured', 1850, 1110, '2020-09-20', 'stretcher.png'),
-(3, 'Stretcher trolley', 'A stretcher trolley is a combined stretcher and trolley. It can also be called a gurney. It allows a sick or injured patient to be transported in a lying, resting state', 8200, 4920, '2017-02-13', 'Stretcher trolley.jpg'),
-(4, 'Medical Bed', 'a bed having side rails that can be raised or lowered and a mattress base in three jointed sections so that the head, foot, or middle may be raised by a crank or motor, allowing a patient to lie in various positions', 20000, 12000, '2019-11-22', 'medical bed.jpg'),
-(5, 'Oximeter', 'a device that estimates the oxygen saturation of the blood and the pulse rate. Oxygen saturation gives information about the amount of oxygen carried in the blood.', 600, 360, '2021-01-04', 'pulse oximeter.jpg'),
-(6, 'BP machine', 'It consists of an inflatable cuff that\'s wrapped around your arm, roughly level with your heart, and a monitoring device that measures the cuff\'s pressure.', 1400, 840, '2017-07-25', 'bpmachine.jpg'),
-(7, 'Walker', 'A walker or walking frame is a device that gives additional support to maintain balance or stability while walking, most commonly due to age-related issues.', 1000, 600, '2016-12-03', 'walker.jpg'),
-(8, 'One hand walker', 'Non-wheeled walkers offer stable support for people who have balance problems. It only takes one hand to use a hemi walker for support while walking.', 1300, 780, '2019-08-05', 'side walker.png'),
-(9, 'Glucometer', 'A medical device that is used for determining the level of glucose in your blood. A very useful device for home glucose monitoring, glucometer machines are preferred by diabetic patients to a large extent.', 700, 420, '2018-03-04', 'glucometer.jpg'),
-(10, 'Back rest Ramp', 'The Ramp is a versatile positioning device that creates a stable and elevated operative surface for a variety of lower extremity procedures.', 2600, 1560, '2017-02-16', 'surgical ramp.jpg');
+INSERT INTO `medi_equipment` (`equip_id`, `name`, `description`, `original_price`, `discounted_price`, `image_name`, `status`, `user_ID`) VALUES
+(1, 'Wheelchair', 'The wheelchair is one of the most commonly used assistive devices to promote mobility and enhance quality of life for people who have difficulties in walking (e.g. a person with spinal cord injuries resulting in quadriplegia or paraplegia, muscular dystrophy,etc). ', 8500, 5100, 'wheelchair.jpg', 'Approved', 2),
+(2, 'Stretcher', 'a light frame made from two long poles with a cover of soft material stretched between them, used for carrying people who are ill or injured', 1850, 1110, 'stretcher.png', 'Approved', 3),
+(3, 'Stretcher trolley', 'A stretcher trolley is a combined stretcher and trolley. It can also be called a gurney. It allows a sick or injured patient to be transported in a lying, resting state', 8200, 4920, 'Stretcher trolley.jpg', 'Approved', 6),
+(4, 'Medical Bed', 'a bed having side rails that can be raised or lowered and a mattress base in three jointed sections so that the head, foot, or middle may be raised by a crank or motor, allowing a patient to lie in various positions', 20000, 12000, 'medical bed.jpg', 'Approved', 2),
+(5, 'Oximeter', 'a device that estimates the oxygen saturation of the blood and the pulse rate. Oxygen saturation gives information about the amount of oxygen carried in the blood.', 600, 360, 'pulse oximeter.jpg', 'Approved', 3),
+(6, 'BP machine', 'It consists of an inflatable cuff that\'s wrapped around your arm, roughly level with your heart, and a monitoring device that measures the cuff\'s pressure.', 1400, 840, 'bpmachine.jpg', 'Approved', 6),
+(7, 'Walker', 'A walker or walking frame is a device that gives additional support to maintain balance or stability while walking, most commonly due to age-related issues.', 1000, 600, 'walker.jpg', 'Approved', 2),
+(8, 'One hand walker', 'Non-wheeled walkers offer stable support for people who have balance problems. It only takes one hand to use a hemi walker for support while walking.', 1300, 780, 'side walker.png', 'Approved', 3),
+(9, 'Glucometer', 'A medical device that is used for determining the level of glucose in your blood. A very useful device for home glucose monitoring, glucometer machines are preferred by diabetic patients to a large extent.', 700, 420, 'glucometer.jpg', 'Approved', 6),
+(10, 'Back rest Ramp', 'The Ramp is a versatile positioning device that creates a stable and elevated operative surface for a variety of lower extremity procedures.', 2600, 1560, 'surgical ramp.jpg', 'Approved', 2),
+(11, 'Doctor Stethoscope', 'Thermocare Doctor Stethoscope Superb Medical Equipment, Health Instrument (Black & White)', 400, 240, '71GCFvMAIyL._SL1500_.jpg', 'Pending...', 3);
 
 -- --------------------------------------------------------
 
@@ -138,7 +141,8 @@ ALTER TABLE `medicines`
 -- Indexes for table `medi_equipment`
 --
 ALTER TABLE `medi_equipment`
-  ADD PRIMARY KEY (`equip_id`);
+  ADD PRIMARY KEY (`equip_id`),
+  ADD KEY `user_ID` (`user_ID`);
 
 --
 -- Indexes for table `users`
@@ -154,13 +158,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `medicines`
 --
 ALTER TABLE `medicines`
-  MODIFY `med_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `med_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `medi_equipment`
 --
 ALTER TABLE `medi_equipment`
-  MODIFY `equip_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `equip_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -177,6 +181,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `medicines`
   ADD CONSTRAINT `medicines_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `users` (`user_ID`);
+
+--
+-- Constraints for table `medi_equipment`
+--
+ALTER TABLE `medi_equipment`
+  ADD CONSTRAINT `medi_equipment_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `users` (`user_ID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

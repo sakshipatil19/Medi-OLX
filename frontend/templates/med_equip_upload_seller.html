@@ -1,21 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Upload Medical Equipment Photo</title>
-    <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap";
-    rel="stylesheet" type="text/css" />
+{% extends "layout.html" %}
+
+{% block body %}
     <style type="text/css">
       .form-style-8 {
-        font-family: "Poppins", sans-serif;
-
-        width: 500px;
+        font-family: "Open Sans Condensed", sans-serif;
+        width: 700px;
         padding: 30px;
         background: #ffffff;
-        margin: 50px auto;
+        margin: 10px auto;
         box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.22);
         -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.22);
         -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.22);
@@ -23,8 +15,7 @@
       .form-style-8 h2 {
         background: #4641a7;
         text-transform: uppercase;
-        font-family: "Poppins", sans-serif;
-
+        font-family: "Open Sans Condensed", sans-serif;
         color: #797979;
         font-size: 18px;
         font-weight: 100;
@@ -52,21 +43,20 @@
         border-bottom: 1px solid #ddd;
         background: transparent;
         margin-bottom: 10px;
-        font: 16px Arial, Helvetica, sans-serif;
+        font-family: "Open Sans Condensed", sans-serif;
         height: 45px;
       }
       .form-style-8 input[type="button"],
       .form-style-8 input[type="submit"] {
-        -moz-box-shadow: inset 0px 1px 0px 0px #45d6d6;
-        -webkit-box-shadow: inset 0px 1px 0px 0px #45d6d6;
-        box-shadow: inset 0px 1px 0px 0px #45d6d6;
+        -moz-box-shadow: inset 0px 1px 0px 0px #4641a7;
+        -webkit-box-shadow: inset 0px 1px 0px 0px #4641a7;
+        box-shadow: inset 0px 1px 0px 0px #4641a7;
         background-color: #4641a7;
         border: 1px solid #4641a7;
         display: inline-block;
         cursor: pointer;
         color: #ffffff;
         font-family: "Poppins", sans-serif;
-
         font-size: 14px;
         padding: 8px 18px;
         text-decoration: none;
@@ -74,7 +64,7 @@
       }
       .form-style-8 input[type="button"]:hover,
       .form-style-8 input[type="submit"]:hover {
-        background: linear-gradient(to bottom, #34caca 5%, #30c9c9 100%);
+        background: linear-gradient(to bottom, #4641a7 5%, #4641a7 100%);
         background-color: #4641a7;
       }
     </style>
@@ -95,7 +85,7 @@
         text-align: center;
         font-size: 28px;
         padding: 20px;
-        width: 200px;
+        width: 150px;
         transition: all 0.5s;
         cursor: pointer;
         margin: 5px;
@@ -126,42 +116,70 @@
       }
     </style>
   </head>
+  
   <body>
     <div class="form-style-8">
-      <h2 style="color: white">ENTER DETAILS OF MEDICAL EQUIPMENT</h2>
-      <form>
-        <label for="1">ENTER NAME OF MEDICAL EQUIPMENT</label>
-        <input type="text" name="field1" id="1" />
-        <label for="2">ENTER PURCHASE DATE</label>
-        <input type="date" name="field2" id="2" />
-        <label for="4">ENTER MRP</label>
-        <input type="text" name="field4" id="4" />
+      <h2 style="color: white">ENTER DETAILS OF MEDICINE</h2>
+    
+      <form action="/sell_equip/add" method="post" id="form1" enctype="multipart/form-data">
+        <label for="1">ENTER NAME OF MEDICINE</label>
+        <input type="text" name="name" id="name" />
+        <label for="2">ENTER DESCRIPTION OF MEDICINE</label>
+        <input type="text" name="description" id="description" />
+        <label for="5">ENTER ORIGINAL MRP</label>
+        <input type="text" name="original_price" id="original_price"/>
+        <button onclick="discount()">Calculate</button>
+        <br>
+        <label for="6">DISCOUNTED MRP</label>
+        <br>
+        <input type="text" name="discounted_price" id="price" readonly>
+        <label for="7">IMAGE NAME</label>
+        <input type="text" name="image_name" id="image" readonly>
+        <label for="8">UPLOAD IMAGE</label> <br>
+        <input 
+          type="file"
+          name="file_name"
+          id="image-input"
+          accept="image/jpeg, image/png, image/jpg" 
+          onchange= "getFileData()"
+        />
+        <div id="display-image" class="display"></div>
+        
+        <button type="submit">
+          <span>Submit</span>
+        </button>
+      
       </form>
-      <input
-        type="file"
-        id="image-input"
-        accept="image/jpeg, image/png, image/jpg"
-      />
-
-      <div id="display-image"></div>
-      <button>
-        <span>Submit</span>
-      </button>
     </div>
 
     <script>
-      const image_input = document.querySelector("#image-input");
+      function discount(){
+        event.preventDefault();
+        var a, c;
+        a = Number(document.getElementById("original_price").value);
+        c = a*0.6
+        document.getElementById("price").value= c;
+        }
+        function getFileData(){
+          fake_path=document.getElementById('image-input').value;
+          var a = fake_path.split("\\").pop();
+          var b = a.split(" ").join("_")
+          document.getElementById("image").value = b;
+          }
+    </script>
 
+    <script>
+      const image_input = document.querySelector("#image-input");
       image_input.addEventListener("change", function () {
         const reader = new FileReader();
         reader.addEventListener("load", () => {
           const uploaded_image = reader.result;
           document.querySelector(
-            "#display-image"
+            ".display"
           ).style.backgroundImage = `url(${uploaded_image})`;
         });
         reader.readAsDataURL(this.files[0]);
       });
     </script>
   </body>
-</html>
+{% endblock %}

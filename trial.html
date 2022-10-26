@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+ 
+        <form id="form1" enctype="multipart/form-data">
+            <input id="image-file" type="file" name="file" />
+            <input id="btn-submit" type="submit" value="submit" />
+        </form>
+    <script>
+        $('#fileupload').fileupload({
+            drop: function (e, data) {
+                $.each(data.files, function (index, file) {
+                    alert('Dropped file: ' + file.name);
+                });
+            },
+            change: function (e, data) {
+                $.each(data.files, function (index, file) {
+                    alert('Selected file: ' + file.name);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

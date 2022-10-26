@@ -2,8 +2,8 @@ from flask import Flask, render_template, request, session, redirect
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import os
-
 import json
+from datetime import datetime, timedelta, date
 
 with open('config.json', 'r') as c:
     params = json.load(c)["params"]
@@ -18,6 +18,9 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = params['prod_uri']
     
 db = SQLAlchemy(app)
+
+now = date.today()
+now_before_month = now - timedelta(days=31)
 
 class Users(db.Model):
     user_ID = db.Column(db.Integer, primary_key=True)
@@ -37,8 +40,9 @@ class Medicines(db.Model):
     price = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(150), nullable=False)
     status = db.Column(db.String(120), nullable=False)
-    expiry = db.Column(db.String(12))
-    image = db.Column(db.String(30))
+    expiry = db.Column(db.Date, nullable=False)
+    image = db.Column(db.String(50), nullable=False)
+    back_img = db.Column(db.String(50), nullable=False)
     user_ID = db.Column(db.Integer, nullable=False)
 
 class Medi_equipment(db.Model):
@@ -47,8 +51,11 @@ class Medi_equipment(db.Model):
     description = db.Column(db.String(150), nullable=False)
     original_price = db.Column(db.Integer, nullable=False)
     discounted_price = db.Column(db.Integer, nullable=False)
-    purchase_date = db.Column(db.String(12))
-    image_name = db.Column(db.String(30))
+    image_name = db.Column(db.String(30), nullable=False)
+    status = db.Column(db.String(30), nullable=False)
+    user_ID = db.Column(db.Integer, nullable=False)
+
+# <------------Store------------->
 
 @app.route("/medicine", methods=['GET', 'POST'])
 def medicine():
@@ -57,9 +64,10 @@ def medicine():
 
 @app.route("/equipment", methods=['GET', 'POST'])
 def equipment():
-    medi_equipment = Medi_equipment.query.filter_by().all()
+    medi_equipment = Medi_equipment.query.filter_by(status="Approved").all()
     return render_template('shop_e.html', params=params, equipment = medi_equipment)
 
+# <------------Login/Register------------->
 @app.route("/signin", methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -97,32 +105,46 @@ def register():
         return redirect("/")
     return render_template('signup.html', params=params)
 
-
+# <------------Home Page------------->
 @app.route("/", methods=['GET', 'POST'])
 def home():
+    # med = Medicines.query.filter_by(status="Approved").all()
+    # now = date.today()
+    # now_before_month = now - timedelta(days=31)
+    # for med in med:
+    #     expiry = med.expiry
+    #     if expiry <= now_before_month:
+    #         medicine = Medicines.query.filter_by(status="Approved", expiry=expiry).all()[0:3]
+    #         medi_equipment = Medi_equipment.query.filter_by(status="Approved").all()[0:3]
+    #     else:
+    #         pass
     medicine = Medicines.query.filter_by(status="Approved").all()[0:3]
-    medi_equipment = Medi_equipment.query.filter_by().all()[0:3]
+    medi_equipment = Medi_equipment.query.filter_by(status="Approved").all()[0:3]
     if not session.get("user"):
         user = Users.query.filter_by(user_ID=1).all()
     else:
         user = Users.query.filter_by(user_email=session['user']).all()
     return render_template('index.html', params = params, medicine = medicine, equipment = medi_equipment, user = user)
 
+# <------------Medicine Detials Page------------->
 @app.route("/medicine/<int:med_id>", methods=['GET', 'POST'])
 def view_med(med_id):
     medicine = Medicines.query.filter_by(med_id=med_id).all()
-    return render_template('shop_single.html', params = params, medicine=medicine)
+    med = Medicines.query.filter_by(med_id=med_id).first()
+    user_ID = med.user_ID
+    users = Users.query.filter_by(user_ID = user_ID).all()
+    return render_template('shop_single.html', params = params, medicine=medicine, users = users)
 
-# @app.route("/myproducts/<int:med_id>", methods=['GET', 'POST'])
-# def view_med(med_id):
-#     medicine = Medicines.query.filter_by(med_id=med_id, users_ID = session['user_ID']).all()
-#     return render_template('shop_single.html', params = params, medicine=medicine)
-
+# <------------Equipment Detials Page------------->
 @app.route("/equipment/<int:equip_id>", methods=['GET', 'POST'])
 def view_e(equip_id):
     medi_equipment = Medi_equipment.query.filter_by(equip_id=equip_id).all()
-    return render_template('shop_eq.html', params = params, medi_equipment=medi_equipment)
+    equip = Medi_equipment.query.filter_by(equip_id=equip_id).first()
+    user_ID = equip.user_ID
+    users = Users.query.filter_by(user_ID=user_ID).all()
+    return render_template('shop_eq.html', params = params, medi_equipment=medi_equipment, users = users)
 
+# <------------Medicine Sell Page------------->
 @app.route("/sell_medi", methods=['GET', 'POST'])
 def sell_medi():
     if not session.get("user"):
@@ -143,23 +165,16 @@ def sell_medi_add():
             price = request.form.get("price")
             image = request.form.get("image")
             status = "Pending..."
+            back_img = request.form.get("image1")
             user_ID = Users.query.filter_by(user_email=session['user']).first()
-            addit = Medicines(name = name, description = description, expiry = expiry, original_price = original_price, price = price, image = image, status = status, user_ID = user_ID.user_ID)
+            addit = Medicines(name = name, description = description, expiry = expiry, original_price = original_price, price = price, image = image, back_img = back_img, status = status, user_ID = user_ID.user_ID)
             db.session.add(addit)
             db.session.commit()
             f = request.files['file_name']
             f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
             return redirect("/")
 
-@app.route("/myproducts", methods=['GET', 'POST'])
-def myproducts():
-    if not session.get("user"):
-        return redirect("/")
-    else:
-        user_ID = Users.query.filter_by(user_email=session['user']).first()
-        medicine = Medicines.query.filter_by(user_ID=user_ID.user_ID).all()
-        return render_template('myproduct.html', params=params, medicine=medicine)
-
+# <------------Equipment Sell Page------------->
 @app.route("/sell_equip", methods=['GET', 'POST'])
 def sell_equip():
     if not session.get("user"):
@@ -167,14 +182,56 @@ def sell_equip():
     else:
         return render_template("med_equip_upload_seller.html", params=params)
 
+@app.route("/sell_equip/add", methods=['GET', 'POST'])
+def sell_equip_add():
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        name = request.form.get("name")
+        description = request.form.get("description")
+        original_price = request.form.get("original_price")
+        discounted_price = request.form.get("discounted_price")
+        image_name = request.form.get("image_name")
+        status = "Pending..."
+        user_ID = Users.query.filter_by(user_email=session['user']).first()
+        addit = Medi_equipment(name=name, description=description, original_price=original_price, discounted_price=discounted_price,
+                          image_name=image_name, status=status, user_ID=user_ID.user_ID)
+        db.session.add(addit)
+        db.session.commit()
+        f = request.files['file_name']
+        f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
+        return redirect("/")
+
+# <------------My Products Viewing Page------------->
+@app.route("/myproducts/med", methods=['GET', 'POST'])
+def myproducts_med():
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        user_ID = Users.query.filter_by(user_email=session['user']).first()
+        medicine = Medicines.query.filter_by(user_ID=user_ID.user_ID).all()
+        return render_template('myproduct_med.html', params=params, medicine=medicine)
+
+@app.route("/myproducts/equip", methods=['GET', 'POST'])
+def myproducts_equip():
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        user_ID = Users.query.filter_by(user_email=session['user']).first()
+        equipments = Medi_equipment.query.filter_by(user_ID=user_ID.user_ID).all()
+        return render_template('myproduct_equip.html', params=params, equipments=equipments)
+
+# <------------About us------------->
 @app.route("/about", methods = ['GET', 'POST'])
 def about():
     return render_template("about.html", params=params)
 
+# <------------Contact Us------------->
 @app.route("/contact", methods = ['GET', 'POST'])
 def contact():
     return render_template("contact.html", params=params)
 
+# <------------Logout Mechanism------------->
 @app.route("/logout")
 def logout():
     if not session.get("user"):
@@ -185,3 +242,19 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug = True)
+
+
+
+# <------------All Pages Details------------->
+# index.html -> Home Page
+
+# layout.html -> Nav bar/Header/Footer
+
+# shop.html -> All Medicines View Page
+# shop_e.html -> All Equipments View Page
+
+# shop_single.html -> Medicines Details Page
+# shop_eq.html -> Equipments Details Page
+
+# med_upload_seller.html -> Medicines Selling Page
+# med_equip_upload_seller.html -> Equipments Selling Page

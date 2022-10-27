@@ -81,7 +81,7 @@ def signup():
                 session['name'] = memb.user_name
                 session['user_ID'] = memb.user_ID
                 if memb.role == "admin":
-                    return redirect('adminhome.html')
+                    return redirect('/admin')
                 else:
                     return redirect("/")
             else:
@@ -239,6 +239,18 @@ def logout():
     else:
         session.pop('user')
         return redirect('/')
+
+
+# <------------Admin------------->
+
+@app.route("/admin", methods = ['GET', 'POST'])
+def admin_home():
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        return render_template("adminhome.html", params=params)
+    else:
+        return redirect("/")
 
 if __name__ == '__main__':
     app.run(debug = True)

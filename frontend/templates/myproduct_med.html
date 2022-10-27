@@ -16,6 +16,7 @@
     <h3 class="text-dark"><a href="/medicine/{{ medicine.med_id }}">{{medicine.name}}</a></h3>
     <p class="price"><del>₹{{ medicine.original_price }}</del> &mdash; ₹{{medicine.price}}</p>
     <p class="price">{{ medicine.status }}</p>
+    <a href="/medicine/remove/{{ medicine.med_id }}">Remove/Delete</a>
   </div>
   {% endfor %}
 </div>

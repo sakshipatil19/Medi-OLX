@@ -56,7 +56,6 @@ class Medi_equipment(db.Model):
     user_ID = db.Column(db.Integer, nullable=False)
 
 # <------------Store------------->
-
 @app.route("/medicine", methods=['GET', 'POST'])
 def medicine():
     medicine = Medicines.query.filter_by(status="Approved").all()
@@ -242,13 +241,150 @@ def logout():
 
 
 # <------------Admin------------->
-
 @app.route("/admin", methods = ['GET', 'POST'])
 def admin_home():
     if not session.get("user"):
         return redirect("/")
     elif session['role'] == "admin":
-        return render_template("adminhome.html", params=params)
+        users = Users.query.filter_by(user_email = session['user']).all()
+        return render_template("adminhome.html", params=params, users = users)
+    else:
+        return redirect("/")
+
+# <------------User Details------------->
+@app.route("/details/user", methods = ['GET', 'POST'])
+def user_details():
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        users = Users.query.filter_by(role="user").all()
+        return render_template("detailsuser.html", params=params, users = users)
+    else:
+        return redirect("/")
+
+# <------------Admin Details------------->
+@app.route("/details/admin", methods = ['GET', 'POST'])
+def admin_details():
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        users = Users.query.filter_by(role="admin").all()
+        return render_template("detailsadmin.html", params=params, users = users)
+    else:
+        return redirect("/")
+
+# <------------Med Details------------->
+@app.route("/details/med", methods = ['GET', 'POST'])
+def med_details():
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        med = Medicines.query.filter_by(status="Approved").all()
+        return render_template("detailsmed.html", params=params, med = med)
+    else:
+        return redirect("/")
+
+# <------------Med Delete------------->
+@app.route("/medicine/remove/<int:med_id>", methods = ['GET', 'POST'])
+def med_remove(med_id):
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        med = Medicines.query.filter_by(med_id = med_id).first()
+        med.status = "Removed by Admin"
+        db.session.commit()
+        return redirect("/details/med")
+    else:
+        med = Medicines.query.filter_by(med_id=med_id).first()
+        med.status = "Removed by You"
+        db.session.commit()
+        return redirect("/myproducts/med")
+
+# <------------Equip Details------------->
+@app.route("/details/equip", methods = ['GET', 'POST'])
+def equip_details():
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        equip = Medi_equipment.query.filter_by(status="Approved").all()
+        return render_template("detailsequip.html", params=params, equip=equip)
+    else:
+        return redirect("/")
+
+# <------------Equip Delete------------->
+@app.route("/equipment/remove/<int:equip_id>", methods = ['GET', 'POST'])
+def equip_remove(equip_id):
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        equip = Medi_equipment.query.filter_by(equip_id = equip_id).first()
+        equip.status = "Removed by Admin"
+        db.session.commit()
+        return redirect("/details/equip")
+    else:
+        equip = Medi_equipment.query.filter_by(equip_id=equip_id).first()
+        equip.status = "Removed by You"
+        db.session.commit()
+        return redirect("/myproducts/equip")
+
+# <------------Approval ------------->
+# <--------------Med-------------->
+@app.route("/med/approval", methods = ['GET', 'POST'])
+def med_approval_list():
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        med = Medicines.query.filter_by(status="Pending...").all()
+        return render_template("approvalmedlst.html", params=params, med = med)
+    else:
+        return redirect("/")
+
+# <--------------Equip-------------->
+@app.route("/equip/approval", methods = ['GET', 'POST'])
+def equip_approval_list():
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        equip = Medi_equipment.query.filter_by(status="Pending...").all()
+        return render_template("approvalequiplst.html", params=params, equip=equip)
+    else:
+        return redirect("/")
+
+# <--------------Med View-------------->
+@app.route("/med/approval/view/<int:med_id>", methods = ['GET', 'POST'])
+def med_approval_view(med_id):
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        medicine = Medicines.query.filter_by(med_id = med_id).all()
+        med = Medicines.query.filter_by(med_id=med_id).first()
+        user_ID = med.user_ID
+        users = Users.query.filter_by(user_ID=user_ID).all()
+        return render_template("approvalmedview.html", params=params, medicine=medicine, users=users)
+    else:
+        return redirect("/")
+
+@app.route("/medicine/approve/<int:med_id>", methods = ['GET', 'POST'])
+def med_approve_done(med_id):
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        med = Medicines.query.filter_by(med_id = med_id).first()
+        med.status = "Approved"
+        db.session.commit()
+        return redirect("/med/approval")
+    else:
+        return redirect("/")
+
+@app.route("/medicine/reject/<int:med_id>", methods = ['GET', 'POST'])
+def med_approve_reject(med_id):
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        med = Medicines.query.filter_by(med_id = med_id).first()
+        med.status = "Rejected"
+        db.session.commit()
+        return redirect("/med/approval")
     else:
         return redirect("/")
 

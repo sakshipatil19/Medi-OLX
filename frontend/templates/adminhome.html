@@ -72,7 +72,7 @@
   </head>
 
   <body>
-    {% extends "layout.html" %}
+    {% extends "layoutadmin.html" %}
 
 		{% block body %}
     <div class="site-blocks-cover" style="background-image: url('{{url_for('static', filename = 'images/hero_1.jpg')}}');">
@@ -96,21 +96,13 @@
     <div class="site-section">
       <div class="container">
         <div class="row align-items-stretch section-overlap">
-          <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
-            <div class="banner-wrap bg-primary h-100">
-              <a href="#" class="h-100">
-                <h5>Lorem <br> Lorem ipsum</h5>
-                <p>
-                  Amet sit amet dolor
-                  <strong>Lorem, ipsum dolor sit amet consectetur adipisicing.</strong>
-                </p>
-              </a>
-            </div>
-          </div>
+          
           <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
             <div class="banner-wrap h-100">
               <a href="#" class="h-100">
-                <h5>Lorem <br> Lorem ipsum</h5>
+                {% for users in users %}
+                <h5>{{ users.user_name }}</h5>
+                {% endfor %}
                 <p>
                   Amet sit amet dolor
                   <strong>Lorem, ipsum dolor sit amet consectetur adipisicing.</strong>
@@ -118,17 +110,7 @@
               </a>
             </div>
           </div>
-          <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
-            <div class="banner-wrap bg-warning h-100">
-              <a href="#" class="h-100">
-                <h5>Lorem <br> Lorem ipsum</h5>
-                <p>
-                  Amet sit amet dolor
-                  <strong>Lorem, ipsum dolor sit amet consectetur adipisicing.</strong>
-                </p>
-              </a>
-            </div>
-          </div>
+          
 
         </div>
       </div>
@@ -157,9 +139,9 @@
       <div class="row">
         <div class="column">
             <div class="m-4">
-              <a href="">
+              <a href="/details/user">
               <div class="card text-center">
-                <div class="card-header text-white bg-dark">USER DETAILS</div>
+                <div class="card-header text-white bg-dark">USER'S DETAILS</div>
                   <div class="card-body">
                     <p class="card-text">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -174,9 +156,9 @@
         </div>
         <div class="column">
             <div class="m-4">
-              <a href="">
+              <a href="/details/med">
               <div class="card text-center">
-                <div class="card-header text-white bg-dark">ADMIN DETAILS</div>
+                <div class="card-header text-white bg-dark">PRODUCT DETAILS</div>
                   <div class="card-body">
                     <p class="card-text">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -193,27 +175,27 @@
       <!-- 2nd row -->
       <div class="row">
         <div class="column">
-            <div class="m-4">
-              <a href="">
-              <div class="card text-center">
-                <div class="card-header text-white bg-dark">PRODUCT DETAILS</div>
-                  <div class="card-body">
-                    <p class="card-text">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                      enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                      nisi ut aliquip ex ea commodo consequat.
-                    </p>
-                  </div>
+          <div class="m-4">
+            <a href="/med/approval">
+            <div class="card text-center">
+              <div class="card-header text-white bg-dark">PRODUCT APPROVAL</div>
+                <div class="card-body">
+                  <p class="card-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                    enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                    nisi ut aliquip ex ea commodo consequat.
+                  </p>
                 </div>
-              </a>
               </div>
+            </a>
+            </div>
         </div>
         <div class="column">
             <div class="m-4">
               <a href="">
               <div class="card text-center">
-                <div class="card-header text-white bg-dark">PRODUCT APPROVAL</div>
+                <div class="card-header text-white bg-dark">PRESCRIPTION APPROVAL</div>
                   <div class="card-body">
                     <p class="card-text">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -251,6 +233,44 @@
               <a href="">
               <div class="card text-center">
                 <div class="card-header text-white bg-dark">PAYMENT DETAILS</div>
+                  <div class="card-body">
+                    <p class="card-text">
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                      enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                      nisi ut aliquip ex ea commodo consequat.
+                    </p>
+                  </div>
+                </div>
+              </a>
+              </div>
+        </div>
+      </div>
+
+      <!-- row 4 -->
+      <div class="row">
+        <div class="column">
+          <div class="m-4">
+            <a href="/details/admin">
+            <div class="card text-center">
+              <div class="card-header text-white bg-dark">ADMIN DETAILS</div>
+                <div class="card-body">
+                  <p class="card-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                    enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                    nisi ut aliquip ex ea commodo consequat.
+                  </p>
+                </div>
+              </div>
+            </a>
+            </div>
+        </div>
+        <div class="column">
+            <div class="m-4">
+              <a href="">
+              <div class="card text-center">
+                <div class="card-header text-white bg-dark">CUSTOMER FEEDBACKS</div>
                   <div class="card-body">
                     <p class="card-text">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do

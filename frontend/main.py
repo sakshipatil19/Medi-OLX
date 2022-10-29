@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import os
@@ -41,9 +41,10 @@ class Medicines(db.Model):
     description = db.Column(db.String(150), nullable=False)
     status = db.Column(db.String(120), nullable=False)
     expiry = db.Column(db.Date, nullable=False)
-    image = db.Column(db.String(50), nullable=False)
-    back_img = db.Column(db.String(50), nullable=False)
+    image = db.Column(db.String(150), nullable=False)
+    back_img = db.Column(db.String(150), nullable=False)
     user_ID = db.Column(db.Integer, nullable=False)
+    pills = db.Column(db.Integer, nullable=False)
 
 class Medi_equipment(db.Model):
     equip_id = db.Column(db.Integer, primary_key=True)
@@ -51,9 +52,28 @@ class Medi_equipment(db.Model):
     description = db.Column(db.String(150), nullable=False)
     original_price = db.Column(db.Integer, nullable=False)
     discounted_price = db.Column(db.Integer, nullable=False)
-    image_name = db.Column(db.String(30), nullable=False)
+    image_name = db.Column(db.String(150), nullable=False)
     status = db.Column(db.String(30), nullable=False)
     user_ID = db.Column(db.Integer, nullable=False)
+
+class Wishlist(db.Model):
+    wishlist_id = db.Column(db.Integer, primary_key=True)
+    type_of = db.Column(db.String(80), nullable = False)
+    user_ID = db.Column(db.Integer, nullable=False)
+    med_id = db.Column(db.Integer, nullable=True)
+    equip_id = db.Column(db.Integer, nullable=True)
+
+class Order_med(db.Model):
+    order_id = db.Column(db.Integer, primary_key=True)
+    user_name = db.Column(db.String(80), nullable=False)
+    user_add = db.Column(db.String(250), nullable=False)
+    user_Cno = db.Column(db.Integer, nullable=False)
+    med_name = db.Column(db.String(80), nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    user_ID = db.Column(db.Integer, primary_key=True)
+    med_id = db.Column(db.Integer, primary_key=True)
+    pres_img = db.Column(db.String(150), nullable=False)
+    order_status = db.Column(db.String(80), nullable=False)
 
 # <------------Store------------->
 @app.route("/medicine", methods=['GET', 'POST'])
@@ -82,6 +102,7 @@ def signup():
                 if memb.role == "admin":
                     return redirect('/admin')
                 else:
+                    flash("You have logged in ", "info")
                     return redirect("/")
             else:
                 return redirect('/signup')
@@ -125,7 +146,7 @@ def home():
         user = Users.query.filter_by(user_email=session['user']).all()
     return render_template('index.html', params = params, medicine = medicine, equipment = medi_equipment, user = user)
 
-# <------------Medicine Detials Page------------->
+# <------------Medicine Details Page------------->
 @app.route("/medicine/<int:med_id>", methods=['GET', 'POST'])
 def view_med(med_id):
     medicine = Medicines.query.filter_by(med_id=med_id).all()
@@ -134,7 +155,7 @@ def view_med(med_id):
     users = Users.query.filter_by(user_ID = user_ID).all()
     return render_template('shop_single.html', params = params, medicine=medicine, users = users)
 
-# <------------Equipment Detials Page------------->
+# <------------Equipment Details Page------------->
 @app.route("/equipment/<int:equip_id>", methods=['GET', 'POST'])
 def view_e(equip_id):
     medi_equipment = Medi_equipment.query.filter_by(equip_id=equip_id).all()
@@ -164,13 +185,17 @@ def sell_medi_add():
             price = request.form.get("price")
             image = request.form.get("image")
             status = "Pending..."
+            pills = request.form.get("no_tab")
             back_img = request.form.get("image1")
             user_ID = Users.query.filter_by(user_email=session['user']).first()
-            addit = Medicines(name = name, description = description, expiry = expiry, original_price = original_price, price = price, image = image, back_img = back_img, status = status, user_ID = user_ID.user_ID)
+            addit = Medicines(name = name, description = description, expiry = expiry, original_price = original_price,
+                              price = price, image = image, back_img = back_img, status = status, user_ID = user_ID.user_ID, pills=pills)
             db.session.add(addit)
             db.session.commit()
             f = request.files['file_name']
             f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
+            f1 = request.files['file_name1']
+            f1.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f1.filename)))
             return redirect("/")
 
 # <------------Equipment Sell Page------------->
@@ -186,20 +211,21 @@ def sell_equip_add():
     if not session.get("user"):
         return redirect("/")
     else:
-        name = request.form.get("name")
-        description = request.form.get("description")
-        original_price = request.form.get("original_price")
-        discounted_price = request.form.get("discounted_price")
-        image_name = request.form.get("image_name")
-        status = "Pending..."
-        user_ID = Users.query.filter_by(user_email=session['user']).first()
-        addit = Medi_equipment(name=name, description=description, original_price=original_price, discounted_price=discounted_price,
-                          image_name=image_name, status=status, user_ID=user_ID.user_ID)
-        db.session.add(addit)
-        db.session.commit()
-        f = request.files['file_name']
-        f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
-        return redirect("/")
+        if (request.method == 'POST'):
+            name = request.form.get("name")
+            description = request.form.get("description")
+            original_price = request.form.get("original_price")
+            discounted_price = request.form.get("discounted_price")
+            image_name = request.form.get("image_name")
+            status = "Pending..."
+            user_ID = Users.query.filter_by(user_email=session['user']).first()
+            addit = Medi_equipment(name=name, description=description, original_price=original_price, discounted_price=discounted_price,
+                              image_name=image_name, status=status, user_ID=user_ID.user_ID)
+            db.session.add(addit)
+            db.session.commit()
+            f = request.files['file_name']
+            f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
+            return redirect("/")
 
 # <------------My Products Viewing Page------------->
 @app.route("/myproducts/med", methods=['GET', 'POST'])
@@ -219,6 +245,126 @@ def myproducts_equip():
         user_ID = Users.query.filter_by(user_email=session['user']).first()
         equipments = Medi_equipment.query.filter_by(user_ID=user_ID.user_ID).all()
         return render_template('myproduct_equip.html', params=params, equipments=equipments)
+
+# <------------Wishlist------------->
+@app.route("/wishlist", methods = ['GET', 'POST'])
+def wishlist():
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        wish = Wishlist.query.filter_by(user_ID = session["user_ID"]).all()
+        med = []
+        equip = []
+        for wish in wish:
+            if wish.med_id is not None:
+                med_id = wish.med_id
+                medicine = Medicines.query.filter_by(med_id = med_id).first()
+                med += [medicine]
+            if wish.equip_id is not None:
+                equip_id = wish.equip_id
+                equipment = Medi_equipment.query.filter_by(equip_id=equip_id).first()
+                equip += [equipment]
+        return render_template("wishlist.html", params=params, med=med, equip=equip)
+
+# <------------Wishlist Med Add------------->
+@app.route("/wishlist/med/<int:med_id>", methods = ['GET', 'POST'])
+def wishlist_med_add(med_id):
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        med_id = med_id
+        user_ID = session["user_ID"]
+        type_of = "Medicine"
+        add_med_wish = Wishlist(type_of=type_of, user_ID=user_ID, med_id=med_id)
+        db.session.add(add_med_wish)
+        db.session.commit()
+        return redirect("/wishlist")
+
+# <------------Wishlist Med Remove------------->
+@app.route("/wishlist/remove/med/<int:med_id>")
+def wishlist_med_remove(med_id):
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        deletewish = Wishlist.query.filter_by(med_id=med_id, user_ID=session["user_ID"]).first()
+        db.session.delete(deletewish)
+        db.session.commit()
+        return redirect("/wishlist")
+
+# <------------Wishlist Equip Add------------->
+@app.route("/wishlist/equip/<int:equip_id>", methods = ['GET', 'POST'])
+def wishlist_equip_add(equip_id):
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        equip_id = equip_id
+        user_ID = session["user_ID"]
+        type_of = "Equipment"
+        add_equip_wish = Wishlist(type_of=type_of, user_ID=user_ID, equip_id=equip_id)
+        db.session.add(add_equip_wish)
+        db.session.commit()
+        return redirect("/wishlist")
+
+# <------------Wishlist Equip Remove------------->
+@app.route("/wishlist/remove/equip/<int:equip_id>", methods = ['GET', 'POST'])
+def wishlist_equip_remove(equip_id):
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        deletewish = Wishlist.query.filter_by(equip_id=equip_id, user_ID=session["user_ID"]).first()
+        db.session.delete(deletewish)
+        db.session.commit()
+        return redirect("/wishlist")
+
+# <------------PRESCRIPTION UPLOAD------------->
+@app.route("/confirm/order/med/<int:med_id>", methods = ['GET', 'POST'])
+def pres_upload(med_id):
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        users = Users.query.filter_by(user_ID=session["user_ID"]).all()
+        return render_template("uploadpres.html", params=params, users=users, med_id=med_id)
+
+@app.route("/upload/pres", methods = ['GET', 'POST'])
+def uploaded_pres():
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        if (request.method == 'POST'):
+            user_name = request.form.get("name")
+            user_add = request.form.get("address")
+            user_Cno = request.form.get("contact")
+            user_ID = session["user_ID"]
+            med_id = request.form.get("med_id")
+            med =  Medicines.query.filter_by(med_id=med_id).first()
+            med_name = med.name
+            price = med.price
+            order_status = "Prescription Approval Pending..."
+            pres_img = request.form.get("image_name")
+            addit = Order_med(user_name=user_name, user_add=user_add, user_Cno=user_Cno, user_ID=user_ID, med_id=med_id, med_name=med_name,
+                              price=price, order_status=order_status, pres_img=pres_img)
+            db.session.add(addit)
+            med.status = "Prescription Approval Pending..."
+            deletewish = Wishlist.query.filter_by(med_id=med_id, user_ID=session["user_ID"]).first()
+            db.session.delete(deletewish)
+            db.session.commit()
+            f = request.files['file_name']
+            f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
+            return redirect("/orders/med/view")
+
+# <------------Med Order User------------->
+@app.route("/orders/med/view", methods = ['GET', 'POST'])
+def order_med():
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        orders = Order_med.query.filter_by(user_ID = session["user_ID"]).all()
+        med = []
+        for order_m in orders:
+            med_id = order_m.med_id
+            medicine = Medicines.query.filter_by(med_id=med_id).first()
+            med += [medicine]
+        return render_template("ordermed.html", params=params, orders=orders, med=med)
 
 # <------------About us------------->
 @app.route("/about", methods = ['GET', 'POST'])
@@ -364,6 +510,7 @@ def med_approval_view(med_id):
     else:
         return redirect("/")
 
+# <--------------Med Approve-------------->
 @app.route("/medicine/approve/<int:med_id>", methods = ['GET', 'POST'])
 def med_approve_done(med_id):
     if not session.get("user"):
@@ -376,6 +523,7 @@ def med_approve_done(med_id):
     else:
         return redirect("/")
 
+# <--------------Med Reject-------------->
 @app.route("/medicine/reject/<int:med_id>", methods = ['GET', 'POST'])
 def med_approve_reject(med_id):
     if not session.get("user"):
@@ -387,6 +535,106 @@ def med_approve_reject(med_id):
         return redirect("/med/approval")
     else:
         return redirect("/")
+
+# <--------------Equip View-------------->
+@app.route("/equip/approval/view/<int:equip_id>", methods = ['GET', 'POST'])
+def equip_approval_view(equip_id):
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        equipment = Medi_equipment.query.filter_by(equip_id = equip_id).all()
+        equip = Medi_equipment.query.filter_by(equip_id=equip_id).first()
+        user_ID = equip.user_ID
+        users = Users.query.filter_by(user_ID=user_ID).all()
+        return render_template("approvalequipview.html", params=params, equipment=equipment, users=users)
+    else:
+        return redirect("/")
+
+# <--------------Equip Approve-------------->
+@app.route("/equipment/approve/<int:equip_id>", methods = ['GET', 'POST'])
+def equip_approve_done(equip_id):
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        equip = Medi_equipment.query.filter_by(equip_id = equip_id).first()
+        equip.status = "Approved"
+        db.session.commit()
+        return redirect("/equip/approval")
+    else:
+        return redirect("/")
+
+# <--------------Equip Reject-------------->
+@app.route("/equipment/reject/<int:equip_id>", methods = ['GET', 'POST'])
+def equip_approve_reject(equip_id):
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        equip = Medi_equipment.query.filter_by(equip_id = equip_id).first()
+        equip.status = "Rejected"
+        db.session.commit()
+        return redirect("/equip/approval")
+    else:
+        return redirect("/")
+
+# <--------------Prescription List-------------->
+@app.route("/prescription/view", methods = ['GET', 'POST'])
+def prescription_view_lst():
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        orders = Order_med.query.filter_by(order_status="Prescription Approval Pending...").all()
+        med = []
+        for od in orders:
+            med_id = od.med_id
+            medicine = Medicines.query.filter_by(med_id=med_id).first()
+            med += [medicine]
+        users = []
+        for md in med:
+            user_ID = md.user_ID
+            user = Users.query.filter_by(user_ID=user_ID).first()
+            users += [user]
+        return render_template("approvalpreslst.html", params=params, orders=orders, med=med, users=users)
+    else:
+        return redirect("/")
+
+# <--------------Prescription View-------------->
+@app.route("/pres/view/<int:order_id>", methods=['GET', 'POST'])
+def pres_view(order_id):
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        orders = Order_med.query.filter_by(order_id=order_id).all()
+        return render_template("approvalpresview.html", params=params, orders=orders)
+    else:
+        return redirect("/")
+
+# <--------------Prescription Approve-------------->
+@app.route("/pres/approve/<int:order_id>", methods=['GET', 'POST'])
+def pres_approve(order_id):
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        orders = Order_med.query.filter_by(order_id=order_id).first()
+        orders.order_status = "Prescription Approved"
+        med_id = orders.med_id
+        med = Medicines.query.filter_by(med_id=med_id).first()
+        med.status = "Payment Pending..."
+        db.session.commit()
+        return redirect("/prescription/view")
+
+# <--------------Prescription Reject-------------->
+@app.route("/pres/reject/<int:order_id>", methods=['GET', 'POST'])
+def pres_reject(order_id):
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        orders = Order_med.query.filter_by(order_id=order_id).first()
+        orders.order_status = "Prescription Rejected"
+        med_id = orders.med_id
+        med = Medicines.query.filter_by(med_id=med_id).first()
+        med.status = "Approved"
+        db.session.commit()
+        return redirect("/prescription/view")
 
 if __name__ == '__main__':
     app.run(debug = True)

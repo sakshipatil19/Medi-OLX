@@ -70,8 +70,8 @@
     </style>
     <style>
       #display-image {
-        width: 400px;
-        height: 225px;
+        width: 600px;
+        height: 800px;
         border: 1px solid black;
         background-position: center;
         background-size: cover;
@@ -119,21 +119,17 @@
   
   <body>
     <div class="form-style-8">
-      <h2 style="color: white">ENTER DETAILS OF MEDICINE</h2>
-    
-      <form action="/sell_equip/add" method="post" id="form1" enctype="multipart/form-data">
-        <label for="1">ENTER NAME OF MEDICINE</label>
-        <input type="text" name="name" id="name" />
-        <label for="2">ENTER DESCRIPTION OF MEDICINE</label>
-        <input type="text" name="description" id="description" />
-        <label for="5">ENTER ORIGINAL MRP</label>
-        <input type="text" name="original_price" id="original_price"/>
-        <button onclick="discount()">Calculate</button>
-        <br>
-        <label for="6">DISCOUNTED MRP</label>
-        <br>
-        <input type="text" name="discounted_price" id="price" readonly>
-        <!-- <label for="7">IMAGE NAME</label> -->
+      <h2 style="color: white">DELIVERY DETAILS AND PRESCRIPTION</h2>
+        <p style="color: #51eaea;">YOU CAN UPDATE THE GIVEN DETAILS</p>
+      <form action="/upload/pres" method="post" id="form1" enctype="multipart/form-data">
+        {% for users in users %}
+        <label for="1">NAME</label>
+        <input type="text" name="name" id="name" value="{{ users.user_name }}"/>
+        <label for="2">ADDRESS</label>
+        <input type="text" name="address" id="address" value="{{ users.user_add }}, {{ users.user_pcode }}"/>
+        <label for="5">CONTACT</label>
+        <input type="text" name="contact" id="contact" value="{{ users.user_Cno }}"/>
+        {% endfor %}
         <input type="text" name="image_name" id="image" readonly hidden>
         <label for="8">UPLOAD IMAGE</label> <br>
         <input 
@@ -143,6 +139,9 @@
           accept="image/jpeg, image/png, image/jpg" 
           onchange= "getFileData()"
         />
+        
+        <input type="text" name="med_id" id="image" value="{{med_id}}" hidden>
+        
         <div id="display-image" class="display"></div>
         
         <button type="submit">
@@ -153,13 +152,6 @@
     </div>
 
     <script>
-      function discount(){
-        event.preventDefault();
-        var a, c;
-        a = Number(document.getElementById("original_price").value);
-        c = a*0.6
-        document.getElementById("price").value= c;
-        }
         function getFileData(){
           fake_path=document.getElementById('image-input').value;
           var a = fake_path.split("\\").pop();

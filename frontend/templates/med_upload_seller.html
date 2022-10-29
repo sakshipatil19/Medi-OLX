@@ -140,8 +140,8 @@
         <input type="text" name="original_price" id="original_price" readonly>
         <label for="9">DISCOUNTED MRP OF NO. OF SELLING TABLETS/PILLS (IN ₹)</label>
         <input type="text" name="price" id="price" readonly>
-        <label for="10">FRONT IMAGE NAME</label>
-        <input type="text" name="image" id="image" readonly>
+        <!-- <label for="10">FRONT IMAGE NAME</label> -->
+        <input type="text" name="image" id="image" readonly hidden>
         <label for="11">UPLOAD FRONT IMAGE</label> <br>
         <input 
           type="file"
@@ -151,8 +151,8 @@
           onchange= "getFileData()"
         />
         <div id="display-image" class="display"></div>
-        <label for="12">BACK IMAGE NAME</label>
-        <input type="text" name="image1" id="image1" readonly>
+        <!-- <label for="12">BACK IMAGE NAME</label> -->
+        <input type="text" name="image1" id="image1" readonly hidden>
         <label for="13">UPLOAD DETAILS/BACK IMAGE</label> <br>
         <input 
           type="file"
@@ -225,7 +225,7 @@
             ".display1"
           ).style.backgroundImage = `url(${uploaded_image})`;
         });
-        reader.readAsDataURL(this.files[1]);
+        reader.readAsDataURL(this.files[0]);
       });
     </script>
   </body>

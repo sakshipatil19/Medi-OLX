@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<hr>
+    <div class="site-section" style="padding: 2em 0;">
+      <div class="container">
+        <div class="row mb-5">
+          <form class="col-md-12" method="post">
+            <div class="site-blocks-table">
+              <table class="table table-bordered">
+                <h1 style="color: black;" align="center">MEDICINES</h1>
+                <thead>
+                  <tr>
+                    <th class="product-thumbnail">Image</th>
+                    <th class="product-name">Product Name</th>
+                    <th class="product-price">Price</th>
+                    <th class="product-remove">Remove</th>
+                    <th class="product-remove">Payment</th>
+                  </tr>
+                </thead>
+                {% for med in med %}
+                {% set img_med = 'images/' + med.image %}
+                <tbody>
+                  <tr>
+                    <td class="product-thumbnail">
+                      <img src="{{url_for('static', filename = img_med)}}" alt="Image" class="img-fluid">
+                    </td>
+                    <td class="product-name">
+                      <h2 class="h5 text-black">{{ med.name }}</h2>
+                    </td>
+                    <td>₹{{ med.price }}</td>
+                    
+                    
+                    <td><a href="/wishlist/remove/med/{{med.med_id}}" class="btn btn-primary height-auto btn-sm">X</a></td>
+                    <td><a href="/confirm/order/med/{{med.med_id}}" class="btn btn-primary height-auto btn-sm">Proceed</a></td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              <table class="table table-bordered">
+                <h1 style="color: black; padding-top:1em;" align="center">EQUIPMENT</h1>
+                <thead>
+                  <tr>
+                    <th class="product-thumbnail">Image</th>
+                    <th class="product-name">Product Name</th>
+                    <th class="product-price">Price</th>
+                    <th class="product-remove">Remove</th>
+                    <th class="product-remove">Payment</th>
+                  </tr>
+                </thead>
+                {% for equip in equip %}
+                {% set img_equip = 'images/' + equip.image_name %}
+                <tbody>
+                  <tr>
+                    <td class="product-thumbnail">
+                      <img src="{{url_for('static', filename = img_equip)}}" alt="Image" class="img-fluid">
+                    </td>
+                    <td class="product-name" >
+                      <h2 class="h5 text-black">{{ equip.name }}</h2>
+                    </td>
+                    <td>₹{{ equip.discounted_price }}</td>
+            
+                    
+                    <td><a href="/wishlist/remove/equip/{{equip.equip_id}}" class="btn btn-primary height-auto btn-sm">X</a></td>
+                    <td><a href="#" class="btn btn-primary height-auto btn-sm">Proceed</a></td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+        <!-- <button class="btn btn-primary btn-lg btn-block" onclick="window.location='checkout.html'">Proceed To
+          Checkout</button> -->
+        <!-- <div class="row">
+          <div class="col-md-6">
+            <div class="row mb-5">
+              <div class="col-md-6 mb-3 mb-md-0">
+                <button class="btn btn-primary btn-md btn-block">Update Cart</button>
+              </div>
+              <div class="col-md-6">
+                <button class="btn btn-outline-primary btn-md btn-block">Continue Shopping</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="text-black h4" for="coupon">Coupon</label>
+                <p>Enter your coupon code if you have one.</p>
+              </div>
+              <div class="col-md-8 mb-3 mb-md-0">
+                <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-primary btn-md px-4">Apply Coupon</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 pl-5">
+            <div class="row justify-content-end">
+              <div class="col-md-7">
+                <div class="row">
+                  <div class="col-md-12 text-right border-bottom mb-5">
+                    <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <span class="text-black">Subtotal</span>
+                  </div>
+                  <div class="col-md-6 text-right">
+                    <strong class="text-black">$230.00</strong>
+                  </div>
+                </div>
+                <div class="row mb-5">
+                  <div class="col-md-6">
+                    <span class="text-black">Total</span>
+                  </div>
+                  <div class="col-md-6 text-right">
+                    <strong class="text-black">$230.00</strong>
+                  </div>
+                </div>
+    
+                <div class="row">
+                  <div class="col-md-12">
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+
+    {% endblock %} 

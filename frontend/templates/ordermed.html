@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<hr>
+    <div class="site-section" style="padding: 2em 0;">
+      <div class="container">
+        <div class="row mb-5">
+          <form class="col-md-12" method="post">
+            <div class="site-blocks-table">
+              <table class="table table-bordered">
+                <h1 style="color: black;" align="center">MEDICINES</h1>
+                <thead>
+                  <tr>
+                    <th class="product-thumbnail">Image</th>
+                    <th class="product-name">Product Name</th>
+                    <th class="product-price">Price</th>
+                    <th class="product-remove">Status</th>
+                    <th class="product-remove">Payment</th>
+                  </tr>
+                </thead>
+                {% for orders in orders %}
+                {% for med in med %}
+                
+                {% set img_med = 'images/' + med.image %}
+                {% if med.med_id == orders.med_id %}
+                <tbody>
+                  <tr>
+                    <td class="product-thumbnail">
+                      <img src="{{url_for('static', filename = img_med)}}" alt="Image" class="img-fluid">
+                    </td>
+                    <td class="product-name">
+                      <h2 class="h5 text-black">{{ med.name }}</h2>
+                    </td>
+                    <td>₹ {{ med.price }}</td>
+                    
+                    <td>{{ orders.order_status }}</td>
+                    
+                    <td><a href="/confirm/order/med/{{med.med_id}}" class="btn btn-primary height-auto btn-sm">Pay Now</a></td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% endblock %} 

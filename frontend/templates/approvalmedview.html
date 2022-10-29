@@ -12,11 +12,11 @@
           {% set img_med_back = 'images/' + medicine.back_img %}
           <div class="col-md-5 mr-auto">
             <div class="border text-center">
-              <img src="{{url_for('static', filename = img_med)}}" alt="Image" class="img-fluid p-5" style="height: 400px; width: 600px;">
+              <img src="{{url_for('static', filename = img_med)}}" alt="Image" class="img-fluid p-5" style="height: 600px; width: 600px;">
             </div>
             {% set img_med_back = 'images/' + medicine.back_img %}
             <div class="border text-center">
-                <img src="{{url_for('static', filename = img_med_back)}}" alt="Image" class="img-fluid p-5" style="height: 400px; width: 600px;">
+                <img src="{{url_for('static', filename = img_med_back)}}" alt="Image" class="img-fluid p-5" style="height: 600px; width: 600px;">
             </div>
           </div>
           
@@ -26,6 +26,7 @@
             
 
             <p><del>₹{{ medicine.original_price }}</del>  <strong class="text-primary h4">₹{{medicine.price}}</strong></p>
+            <p>Quantity/No. of Tablets or Pills: {{ medicine.pills }}<p>
             <p>Expiry Date (YYYY-MM-DD): {{medicine.expiry }}<p>
             <div class="row">
                 <div class="col-2" style="padding-right: 60px;">

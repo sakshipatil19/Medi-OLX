@@ -61,26 +61,23 @@
             <th scope="col">Buyer ID</th>
             <th scope="col">Buyer Name</th>
             <th scope="col">Seller ID</th>
-            <th scope="col">Seller Name</th>  
             <th scope="col">Medicine Name</th>
             <th scope="col">Price</th>
             <th scope="col">View Prescription</th>
           </tr>
         </thead>
         <tbody>
+          
           {% for orders in orders %}
-          {% for users in users %}
+          
           <tr>
             <th scope="row" align="center">{{ orders.user_ID }}</th>
             <td align="center">{{ orders.user_name }}</td>
-            <td align="center">{{ users.user_ID }}</td>
-            <td align="center">{{ users.user_name }}</td>
+            <td align="center">{{ orders.seller_id }}</td>
             <td align="center">{{ orders.med_name }}</td>
             <td align="center">{{ orders.price }}</td>
             <td align="center"><a href="/pres/view/{{ orders.order_id }}">View</a></td>
           </tr>
-          
-          {% endfor %}
           {% endfor %}
         </tbody>
       </table>

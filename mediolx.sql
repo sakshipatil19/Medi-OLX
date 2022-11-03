@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 29, 2022 at 08:47 PM
+-- Generation Time: Nov 03, 2022 at 08:19 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.0.13
 
@@ -20,6 +20,31 @@ SET time_zone = "+00:00";
 --
 -- Database: `mediolx`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `delivery`
+--
+
+CREATE TABLE `delivery` (
+  `delivery_id` int(11) NOT NULL,
+  `delivery_status` varchar(100) NOT NULL,
+  `user_ID` int(11) DEFAULT NULL,
+  `med_id` int(11) DEFAULT NULL,
+  `equip_id` int(11) DEFAULT NULL,
+  `seller_id` int(11) DEFAULT NULL,
+  `order_date` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `delivery`
+--
+
+INSERT INTO `delivery` (`delivery_id`, `delivery_status`, `user_ID`, `med_id`, `equip_id`, `seller_id`, `order_date`) VALUES
+(1, 'Not Yet Dispatched', 3, 1, NULL, 2, '2022-11-03'),
+(2, 'Not Yet Dispatched', 3, 1, NULL, 2, '2022-11-03'),
+(3, 'Not Yet Dispatched', 3, NULL, 1, 2, '2022-11-03');
 
 -- --------------------------------------------------------
 
@@ -46,11 +71,11 @@ CREATE TABLE `medicines` (
 --
 
 INSERT INTO `medicines` (`med_id`, `name`, `original_price`, `price`, `description`, `expiry`, `image`, `back_img`, `status`, `user_ID`, `pills`) VALUES
-(1, 'Naselin 0.05% Decongestant Nasal Solution 10 ml', 100, 78, 'Naselin Nasal Spray contains Oxymetazoline Hydrochloride as active ingredients. It acts as a nasal decongestant and helps in opening the blocked nostrils in infants and children.', '2024-02-13', 'naselin.jpg', '', 'Payment Pending...', 2, 10),
-(2, 'Hapdco Natrum Muriaticum 6X Tablet 25 gm', 300, 256, 'Hapdco Nat. Mur. Biochemic Tablet is strongly indicated in conditions associated with anaemia. It relieves sings of fatigue and exhaustion and boosts energy levels in the body. It also reduces swelling of the neck caused due to inflammation of the gland and is strongly indication in ailments related to diabetes and hyperthyroidism.\r\n', '2023-11-24', 'Hapdco Natrun.png', '', 'Prescription Approval Pending...', 2, 10),
-(3, 'Dr. Willmar Schwabe Calcarea Phosphorica 6X Tablet 20 gm', 400, 364, 'Dr Willmar Schwabe Germany Calcarea Phosphorica Biochemic Tablet is a homoeopathic remedy which is useful in growth and healing processes of bones and teeth. It helps in relieving ailments during dentition. It is also useful in the treatment of fractures and osteoporosis.', '2023-07-23', 'Dr. Willmar Schwabe.png', '', 'Approved', 2, 10),
+(1, 'Naselin 0.05% Decongestant Nasal Solution 10 ml', 100, 78, 'Naselin Nasal Spray contains Oxymetazoline Hydrochloride as active ingredients. It acts as a nasal decongestant and helps in opening the blocked nostrils in infants and children.', '2024-02-13', 'naselin.jpg', '', 'Sold', 2, 10),
+(2, 'Hapdco Natrum Muriaticum 6X Tablet 25 gm', 300, 256, 'Hapdco Nat. Mur. Biochemic Tablet is strongly indicated in conditions associated with anaemia. It relieves sings of fatigue and exhaustion and boosts energy levels in the body. It also reduces swelling of the neck caused due to inflammation of the gland and is strongly indication in ailments related to diabetes and hyperthyroidism.\r\n', '2023-11-24', 'Hapdco Natrun.png', '', 'Payment Pending...', 2, 10),
+(3, 'Dr. Willmar Schwabe Calcarea Phosphorica 6X Tablet 20 gm', 400, 364, 'Dr Willmar Schwabe Germany Calcarea Phosphorica Biochemic Tablet is a homoeopathic remedy which is useful in growth and healing processes of bones and teeth. It helps in relieving ailments during dentition. It is also useful in the treatment of fractures and osteoporosis.', '2023-07-23', 'Dr. Willmar Schwabe.png', '', 'Prescription Approval Pending...', 2, 10),
 (4, 'Pro360 100% Plant Based Vegan Collagen Builder - Unflavored 250 gm', 950, 899, 'Pro360 100% Plant-Based Collagen Builder has amla and acerola, which are both rich sources of Vitamin C and have abundant antioxidant properties, which contribute to collagen production, slowing down the ageing process and improving skin’s elasticity and firmness.', '2024-10-02', 'Pro360.png', '', 'Approved', 2, 10),
-(5, 'Dolo 650 Tablet', 50, 30, 'Dolo 650 Tablet helps relieve pain and fever by blocking the release of certain chemical messengers responsible for fever and pain. It is used to treat headaches, migraine, nerve pain, toothache, sore throat, period (menstrual) pains, arthritis, muscle aches, and the common cold.', '2023-02-22', 'Dolo 650.jpg', '', 'Approved', 2, 10),
+(5, 'Dolo 650 Tablet', 50, 30, 'Dolo 650 Tablet helps relieve pain and fever by blocking the release of certain chemical messengers responsible for fever and pain. It is used to treat headaches, migraine, nerve pain, toothache, sore throat, period (menstrual) pains, arthritis, muscle aches, and the common cold.', '2023-02-22', 'Dolo 650.jpg', '', 'Prescription Approval Pending...', 2, 10),
 (6, 'Crocin Pain Relief Tablet', 75, 57, 'Crocin Pain Relief Tablet is a combination of two medicines used in the treatment of headache. It helps relieve headache by blocking the release of certain chemical messengers that causes headache.', '2023-06-02', 'Crocin Pain relif.jpg', '', 'Approved', 3, 10),
 (9, 'Flogel Ultra Eye Drop\r\n', 380, 321, 'Flogel Ultra Eye Drop is a prescription medicine used to treat symptoms of dry eyes. It lubricates the eyes. This way it provides temporary relief from burning and discomfort caused by dry eyes. It also reduces redness and swelling of the eye.', '2024-05-09', 'Flogel Ultra Eye Drop.jpg', '', 'Approved', 3, 10),
 (10, 'Soliwax -A Ear Drop', 250, 192, 'Soliwax -E Ear Drop will relieve earache promptly, and begin to emulsify and disperse the excess cerumen while exerting insecticidal, antibacterial and anti-fungal properties simultaneously.', '2025-01-05', 'Soliwax ear drop.jpg', '', 'Approved', 3, 10),
@@ -83,7 +108,7 @@ CREATE TABLE `medi_equipment` (
 --
 
 INSERT INTO `medi_equipment` (`equip_id`, `name`, `description`, `original_price`, `discounted_price`, `image_name`, `status`, `user_ID`) VALUES
-(1, 'Wheelchair', 'The wheelchair is one of the most commonly used assistive devices to promote mobility and enhance quality of life for people who have difficulties in walking (e.g. a person with spinal cord injuries resulting in quadriplegia or paraplegia, muscular dystrophy,etc). ', 8500, 5100, 'wheelchair.jpg', 'Approved', 2),
+(1, 'Wheelchair', 'The wheelchair is one of the most commonly used assistive devices to promote mobility and enhance quality of life for people who have difficulties in walking (e.g. a person with spinal cord injuries resulting in quadriplegia or paraplegia, muscular dystrophy,etc). ', 8500, 5100, 'wheelchair.jpg', 'Sold', 2),
 (2, 'Stretcher', 'a light frame made from two long poles with a cover of soft material stretched between them, used for carrying people who are ill or injured', 1850, 1110, 'stretcher.png', 'Approved', 3),
 (3, 'Stretcher trolley', 'A stretcher trolley is a combined stretcher and trolley. It can also be called a gurney. It allows a sick or injured patient to be transported in a lying, resting state', 8200, 4920, 'Stretcher trolley.jpg', 'Approved', 6),
 (4, 'Medical Bed', 'a bed having side rails that can be raised or lowered and a mattress base in three jointed sections so that the head, foot, or middle may be raised by a crank or motor, allowing a patient to lie in various positions', 20000, 12000, 'medical bed.jpg', 'Approved', 2),
@@ -111,16 +136,48 @@ CREATE TABLE `order_med` (
   `pres_img` varchar(150) NOT NULL,
   `user_ID` int(11) DEFAULT NULL,
   `med_id` int(11) DEFAULT NULL,
-  `order_status` varchar(50) NOT NULL
+  `order_status` varchar(50) NOT NULL,
+  `seller_id` int(11) DEFAULT NULL,
+  `dis_status` int(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `order_med`
 --
 
-INSERT INTO `order_med` (`order_id`, `user_name`, `user_add`, `user_Cno`, `med_name`, `price`, `pres_img`, `user_ID`, `med_id`, `order_status`) VALUES
-(5, 'Aaman', '702,Platinum Cresta,Thane, 400601', 9653632755, 'Naselin 0.05% Decongestant Nasal Solution 10 ml', 78, 'Sample-prescription-used-as-input-to-the-GUI-developed-in-the-present-work.png', 3, 1, 'Prescription Approved'),
-(7, 'Aaman', '702,Platinum Cresta,Thane, 400601', 9653632755, 'Hapdco Natrum Muriaticum 6X Tablet 25 gm', 256, '2022_9$largeimg_1999179093.jpeg', 3, 2, 'Prescription Approval Pending...');
+INSERT INTO `order_med` (`order_id`, `user_name`, `user_add`, `user_Cno`, `med_name`, `price`, `pres_img`, `user_ID`, `med_id`, `order_status`, `seller_id`, `dis_status`) VALUES
+(5, 'Aaman', '702,Platinum Cresta,Thane, 400601', 9653632755, 'Naselin 0.05% Decongestant Nasal Solution 10 ml', 78, 'Sample-prescription-used-as-input-to-the-GUI-developed-in-the-present-work.png', 3, 1, 'Payment Completed', 2, 1),
+(7, 'Aaman', '702,Platinum Cresta,Thane, 400601', 9653632755, 'Hapdco Natrum Muriaticum 6X Tablet 25 gm', 256, '2022_9largeimg_1999179093.jpeg', 3, 2, 'Prescription Approved', 2, 0),
+(8, 'Aaman', '702,Platinum Cresta,Thane, 400601', 9653632755, 'Dolo 650 Tablet', 30, 'Sample-prescription-used-as-input-to-the-GUI-developed-in-the-present-work.png', 3, 5, 'Prescription Approval Pending...', 2, 0),
+(9, 'Aaman', '702,Platinum Cresta,Thane, 400601', 9653632755, 'Dr. Willmar Schwabe Calcarea Phosphorica 6X Tablet', 364, 'A-sample-prescription-containing-handwritten-texts-over-the-printed-lines.png', 3, 3, 'Prescription Approval Pending...', 2, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payment`
+--
+
+CREATE TABLE `payment` (
+  `pay_id` int(11) NOT NULL,
+  `price` bigint(10) NOT NULL,
+  `user_name` varchar(100) NOT NULL,
+  `user_Cno` bigint(10) NOT NULL,
+  `user_add` varchar(250) NOT NULL,
+  `user_ID` int(11) DEFAULT NULL,
+  `seller_id` int(11) DEFAULT NULL,
+  `med_id` int(11) DEFAULT NULL,
+  `equip_id` int(11) DEFAULT NULL,
+  `payment_date` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `payment`
+--
+
+INSERT INTO `payment` (`pay_id`, `price`, `user_name`, `user_Cno`, `user_add`, `user_ID`, `seller_id`, `med_id`, `equip_id`, `payment_date`) VALUES
+(2, 78, 'Aaman', 9653632755, '702,Platinum Cresta,Thane, 400601', 3, 2, 1, NULL, '2022-11-03'),
+(3, 78, 'Aaman', 9653632755, '702,Platinum Cresta,Thane, 400601', 3, 2, 1, NULL, '2022-11-03'),
+(4, 5100, 'Aaman', 9653632755, '702,Platinum Cresta,Thane', 3, 2, NULL, 1, '2022-11-03');
 
 -- --------------------------------------------------------
 
@@ -173,11 +230,21 @@ CREATE TABLE `wishlist` (
 
 INSERT INTO `wishlist` (`wishlist_id`, `type_of`, `med_id`, `user_ID`, `equip_id`) VALUES
 (22, 'Medicine', 2, 2, NULL),
-(31, 'Medicine', 5, 3, NULL);
+(34, 'Equipment', NULL, 3, 1);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `delivery`
+--
+ALTER TABLE `delivery`
+  ADD PRIMARY KEY (`delivery_id`),
+  ADD KEY `user_ID` (`user_ID`),
+  ADD KEY `med_id` (`med_id`),
+  ADD KEY `equip_id` (`equip_id`),
+  ADD KEY `seller_id` (`seller_id`);
 
 --
 -- Indexes for table `medicines`
@@ -199,7 +266,17 @@ ALTER TABLE `medi_equipment`
 ALTER TABLE `order_med`
   ADD PRIMARY KEY (`order_id`),
   ADD KEY `user_ID` (`user_ID`),
-  ADD KEY `med_id` (`med_id`);
+  ADD KEY `med_id` (`med_id`),
+  ADD KEY `seller_id` (`seller_id`);
+
+--
+-- Indexes for table `payment`
+--
+ALTER TABLE `payment`
+  ADD PRIMARY KEY (`pay_id`),
+  ADD KEY `user_ID` (`user_ID`),
+  ADD KEY `med_id` (`med_id`),
+  ADD KEY `equip_id` (`equip_id`);
 
 --
 -- Indexes for table `users`
@@ -221,6 +298,12 @@ ALTER TABLE `wishlist`
 --
 
 --
+-- AUTO_INCREMENT for table `delivery`
+--
+ALTER TABLE `delivery`
+  MODIFY `delivery_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `medicines`
 --
 ALTER TABLE `medicines`
@@ -236,7 +319,13 @@ ALTER TABLE `medi_equipment`
 -- AUTO_INCREMENT for table `order_med`
 --
 ALTER TABLE `order_med`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `payment`
+--
+ALTER TABLE `payment`
+  MODIFY `pay_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -248,11 +337,20 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `wishlist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `wishlist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `delivery`
+--
+ALTER TABLE `delivery`
+  ADD CONSTRAINT `delivery_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `users` (`user_ID`),
+  ADD CONSTRAINT `delivery_ibfk_2` FOREIGN KEY (`med_id`) REFERENCES `medicines` (`med_id`),
+  ADD CONSTRAINT `delivery_ibfk_3` FOREIGN KEY (`equip_id`) REFERENCES `medi_equipment` (`equip_id`),
+  ADD CONSTRAINT `delivery_ibfk_4` FOREIGN KEY (`seller_id`) REFERENCES `users` (`user_ID`);
 
 --
 -- Constraints for table `medicines`
@@ -271,7 +369,16 @@ ALTER TABLE `medi_equipment`
 --
 ALTER TABLE `order_med`
   ADD CONSTRAINT `order_med_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `users` (`user_ID`),
-  ADD CONSTRAINT `order_med_ibfk_2` FOREIGN KEY (`med_id`) REFERENCES `medicines` (`med_id`);
+  ADD CONSTRAINT `order_med_ibfk_2` FOREIGN KEY (`med_id`) REFERENCES `medicines` (`med_id`),
+  ADD CONSTRAINT `order_med_ibfk_3` FOREIGN KEY (`seller_id`) REFERENCES `users` (`user_ID`);
+
+--
+-- Constraints for table `payment`
+--
+ALTER TABLE `payment`
+  ADD CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `users` (`user_ID`),
+  ADD CONSTRAINT `payment_ibfk_2` FOREIGN KEY (`med_id`) REFERENCES `medicines` (`med_id`),
+  ADD CONSTRAINT `payment_ibfk_3` FOREIGN KEY (`equip_id`) REFERENCES `medi_equipment` (`equip_id`);
 
 --
 -- Constraints for table `wishlist`

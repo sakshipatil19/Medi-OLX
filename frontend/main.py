@@ -4,6 +4,8 @@ from werkzeug.utils import secure_filename
 import os
 import json
 from datetime import datetime, timedelta, date
+import razorpay
+import re
 
 with open('config.json', 'r') as c:
     params = json.load(c)["params"]
@@ -19,8 +21,7 @@ else:
     
 db = SQLAlchemy(app)
 
-now = date.today()
-now_before_month = now - timedelta(days=31)
+
 
 class Users(db.Model):
     user_ID = db.Column(db.Integer, primary_key=True)
@@ -70,10 +71,33 @@ class Order_med(db.Model):
     user_Cno = db.Column(db.Integer, nullable=False)
     med_name = db.Column(db.String(80), nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    user_ID = db.Column(db.Integer, primary_key=True)
-    med_id = db.Column(db.Integer, primary_key=True)
+    user_ID = db.Column(db.Integer, nullable=False)
+    seller_id = db.Column(db.Integer, nullable=False)
+    med_id = db.Column(db.Integer, nullable=False)
     pres_img = db.Column(db.String(150), nullable=False)
     order_status = db.Column(db.String(80), nullable=False)
+    dis_status = db.Column(db.Integer, nullable=False)
+
+class Payment(db.Model):
+    pay_id = db.Column(db.Integer, primary_key=True)
+    price = db.Column(db.Integer, nullable=False)
+    user_name = db.Column(db.String(80), nullable=False)
+    user_Cno = db.Column(db.Integer, nullable=False)
+    user_ID = db.Column(db.Integer, nullable=False)
+    seller_id = db.Column(db.Integer, nullable=False)
+    med_id = db.Column(db.Integer, nullable=True)
+    equip_id = db.Column(db.Integer, nullable=True)
+    user_add = db.Column(db.String(250), nullable=False)
+    payment_date = db.Column(db.Date, nullable=False)
+
+class Delivery(db.Model):
+    delivery_id = db.Column(db.Integer, primary_key=True)
+    delivery_status = db.Column(db.String(80), nullable=False)
+    user_ID = db.Column(db.Integer, nullable=False)
+    med_id = db.Column(db.Integer, nullable=True)
+    equip_id = db.Column(db.Integer, nullable=True)
+    seller_id = db.Column(db.Integer, nullable=False)
+    order_date = db.Column(db.Date, nullable=False)
 
 # <------------Store------------->
 @app.route("/medicine", methods=['GET', 'POST'])
@@ -89,40 +113,76 @@ def equipment():
 # <------------Login/Register------------->
 @app.route("/signin", methods=['GET', 'POST'])
 def signup():
-    if request.method == 'POST':
-        user_email = request.form.get('user_email')
-        user_pwd = request.form.get('user_pwd')
-        memb = Users.query.filter_by(user_email=user_email).first()
-        if memb:
-            if memb.user_pwd == user_pwd and memb.user_email == user_email:
-                session['user'] = memb.user_email
-                session['role'] = memb.role
-                session['name'] = memb.user_name
-                session['user_ID'] = memb.user_ID
-                if memb.role == "admin":
-                    return redirect('/admin')
+    if not session.get("user"):
+        if request.method == 'POST':
+            user_email = request.form.get('user_email')
+            user_pwd = request.form.get('user_pwd')
+            memb = Users.query.filter_by(user_email=user_email).first()
+            if memb:
+                if memb.user_pwd == user_pwd and memb.user_email == user_email:
+                    session['user'] = memb.user_email
+                    session['role'] = memb.role
+                    session['name'] = memb.user_name
+                    session['user_ID'] = memb.user_ID
+                    if memb.role == "admin":
+                        return redirect('/admin')
+                    else:
+                        flash("You have logged in ", "info")
+                        return redirect("/")
                 else:
-                    flash("You have logged in ", "info")
-                    return redirect("/")
+                    flash("Password Did not matched", "error")
+                    return redirect('/signin')
             else:
-                return redirect('/signup')
+                flash("Your Email is not Registered. Please Sign Up", "info")
+                return redirect('/signin')
+    else:
+        flash("You are already Logged In, Logout first.", "info")
+        return redirect("/")
     return render_template('login.html', params=params)
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        user_name = request.form.get("user_name")
-        UIDAI = request.form.get("UIDAI")
-        user_add = request.form.get("user_add")
-        user_Cno = request.form.get("user_Cno")
-        user_email = request.form.get("user_email")
-        user_pcode = request.form.get("user_pcode")
-        user_pwd = request.form.get("user_pwd")
-        role = "user"
-        newreg = Users(user_name=user_name, UIDAI=UIDAI, user_add=user_add, user_Cno=user_Cno, user_email=user_email, user_pcode=user_pcode, user_pwd=user_pwd, role=role)
-        db.session.add(newreg)
-        db.session.commit()
+    if not session.get("user"):
+        if request.method == 'POST':
+            user_name = request.form.get("user_name")
+            UIDAI = request.form.get("UIDAI")
+            user_add = request.form.get("user_add")
+            user_Cno = request.form.get("user_Cno")
+            user_email = request.form.get("user_email")
+            user_pcode = request.form.get("user_pcode")
+            user_pwd = request.form.get("user_pwd")
+            p = user_pwd
+            role = "user"
+            users = Users.query.filter_by().all()
+            for user in users:
+                if user_email == user.user_email:
+                    flash("Your Email is already Registered", "info")
+                    return redirect('/register')
+            if (len(p) < 7 or len(p) > 17):
+                flash("Password Should be of 8 to 16 Characters", "info")
+                return redirect('/register')
+            elif not re.search("[a-z]", p):
+                flash("Password Should Contain atleast 1 Lowercase Characters", "info")
+                return redirect('/register')
+            elif not re.search("[0-9]", p):
+                flash("Password Should Contain atleast 1 Digit Characters", "info")
+                return redirect('/register')
+            elif not re.search("[A-Z]", p):
+                flash("Password Should Contain atleast 1 Uppercase Characters", "info")
+                return redirect('/register')
+            elif not re.search("[!$#@*&()]", p):
+                flash("Password Should Contain atleast 1 Special Characters", "info")
+                return redirect('/register')
+            else:
+                newreg = Users(user_name=user_name, UIDAI=UIDAI, user_add=user_add, user_Cno=user_Cno,
+                               user_email=user_email, user_pcode=user_pcode, user_pwd=user_pwd, role=role)
+                db.session.add(newreg)
+                db.session.commit()
+                return redirect("/")
+    else:
+        flash("You are already Logged In, Logout first to Register", "info")
         return redirect("/")
+
     return render_template('signup.html', params=params)
 
 # <------------Home Page------------->
@@ -168,6 +228,7 @@ def view_e(equip_id):
 @app.route("/sell_medi", methods=['GET', 'POST'])
 def sell_medi():
     if not session.get("user"):
+        flash("Login First", "error")
         return redirect("/")
     else:
         return render_template("med_upload_seller.html", params=params)
@@ -202,6 +263,7 @@ def sell_medi_add():
 @app.route("/sell_equip", methods=['GET', 'POST'])
 def sell_equip():
     if not session.get("user"):
+        flash("Login First", "error")
         return redirect("/")
     else:
         return render_template("med_equip_upload_seller.html", params=params)
@@ -231,6 +293,7 @@ def sell_equip_add():
 @app.route("/myproducts/med", methods=['GET', 'POST'])
 def myproducts_med():
     if not session.get("user"):
+        flash("Login First", "error")
         return redirect("/")
     else:
         user_ID = Users.query.filter_by(user_email=session['user']).first()
@@ -240,6 +303,7 @@ def myproducts_med():
 @app.route("/myproducts/equip", methods=['GET', 'POST'])
 def myproducts_equip():
     if not session.get("user"):
+        flash("Login First", "error")
         return redirect("/")
     else:
         user_ID = Users.query.filter_by(user_email=session['user']).first()
@@ -250,6 +314,7 @@ def myproducts_equip():
 @app.route("/wishlist", methods = ['GET', 'POST'])
 def wishlist():
     if not session.get("user"):
+        flash("Login First", "error")
         return redirect("/")
     else:
         wish = Wishlist.query.filter_by(user_ID = session["user_ID"]).all()
@@ -258,11 +323,11 @@ def wishlist():
         for wish in wish:
             if wish.med_id is not None:
                 med_id = wish.med_id
-                medicine = Medicines.query.filter_by(med_id = med_id).first()
+                medicine = Medicines.query.filter_by(med_id = med_id, status = "Approved").first()
                 med += [medicine]
             if wish.equip_id is not None:
                 equip_id = wish.equip_id
-                equipment = Medi_equipment.query.filter_by(equip_id=equip_id).first()
+                equipment = Medi_equipment.query.filter_by(equip_id=equip_id, status = "Approved").first()
                 equip += [equipment]
         return render_template("wishlist.html", params=params, med=med, equip=equip)
 
@@ -270,6 +335,7 @@ def wishlist():
 @app.route("/wishlist/med/<int:med_id>", methods = ['GET', 'POST'])
 def wishlist_med_add(med_id):
     if not session.get("user"):
+        flash("Login First", "error")
         return redirect("/")
     else:
         med_id = med_id
@@ -295,6 +361,7 @@ def wishlist_med_remove(med_id):
 @app.route("/wishlist/equip/<int:equip_id>", methods = ['GET', 'POST'])
 def wishlist_equip_add(equip_id):
     if not session.get("user"):
+        flash("Login First", "error")
         return redirect("/")
     else:
         equip_id = equip_id
@@ -338,11 +405,13 @@ def uploaded_pres():
             med_id = request.form.get("med_id")
             med =  Medicines.query.filter_by(med_id=med_id).first()
             med_name = med.name
+            seller_id = med.user_ID
             price = med.price
             order_status = "Prescription Approval Pending..."
             pres_img = request.form.get("image_name")
-            addit = Order_med(user_name=user_name, user_add=user_add, user_Cno=user_Cno, user_ID=user_ID, med_id=med_id, med_name=med_name,
-                              price=price, order_status=order_status, pres_img=pres_img)
+            dis_status = 0
+            addit = Order_med(user_name=user_name, user_add=user_add, user_Cno=user_Cno, user_ID=user_ID, seller_id=seller_id, med_id=med_id, med_name=med_name,
+                              price=price, order_status=order_status, pres_img=pres_img, dis_status = dis_status)
             db.session.add(addit)
             med.status = "Prescription Approval Pending..."
             deletewish = Wishlist.query.filter_by(med_id=med_id, user_ID=session["user_ID"]).first()
@@ -356,15 +425,129 @@ def uploaded_pres():
 @app.route("/orders/med/view", methods = ['GET', 'POST'])
 def order_med():
     if not session.get("user"):
+        flash("Login First", "error")
         return redirect("/")
     else:
-        orders = Order_med.query.filter_by(user_ID = session["user_ID"]).all()
+        orders = Order_med.query.filter_by(user_ID = session["user_ID"], dis_status = 0).all()
         med = []
         for order_m in orders:
             med_id = order_m.med_id
             medicine = Medicines.query.filter_by(med_id=med_id).first()
             med += [medicine]
         return render_template("ordermed.html", params=params, orders=orders, med=med)
+
+# <------------Payment med complete------------->
+@app.route("/pay/order/med/<int:med_id>", methods=['GET', 'POST'])
+def pay_med(med_id):
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        med = Medicines.query.filter_by(med_id = med_id).first()
+        if med.status == "Payment Pending...":
+            users = Users.query.filter_by(user_ID=session['user_ID']).first()
+            orders = Order_med.query.filter_by(med_id=med_id, user_ID=session['user_ID']).first()
+            client = razorpay.Client(auth = ("rzp_test_HJEVdhoCF6dSvY", "xpocHyKYqLG8FJZrNRR6LOPe"))
+            payment = client.order.create({'amount': (int(med.price * 100)),
+                                           'currency': 'INR', 'payment_capture': '1'})
+            return render_template("razorpay.html", payment=payment, users = users, med=med, params=params, orders=orders)
+        else:
+            flash("Prescription Approval is Pending", "error")
+            return redirect("/orders/med/view")
+
+
+# <------------Payment Equip complete------------->
+@app.route("/pay/order/equip/<int:equip_id>", methods=['GET', 'POST'])
+def pay_equip(equip_id):
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        equip = Medi_equipment.query.filter_by(equip_id = equip_id).first()
+        if equip.status == "Approved":
+            users = Users.query.filter_by(user_ID=session['user_ID']).first()
+            equip = Medi_equipment.query.filter_by(equip_id=equip_id).first()
+            client = razorpay.Client(auth = ("rzp_test_HJEVdhoCF6dSvY", "xpocHyKYqLG8FJZrNRR6LOPe"))
+            payment = client.order.create({'amount': (int(equip.discounted_price * 100)),
+                                           'currency': 'INR', 'payment_capture': '1'})
+            return render_template("razorpay_equip.html", payment=payment, users = users, equip=equip, params=params)
+        else:
+            flash("Something went wrong.", "error")
+            return redirect("/wishlist")
+
+# <------------Payment Med confirmed------------->
+@app.route("/confirmed/med/<int:med_id>", methods=['GET', 'POST'])
+def confirmed_med(med_id):
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        med = Medicines.query.filter_by(med_id=med_id).first()
+        med.status = "Sold"
+        orders = Order_med.query.filter_by(med_id=med_id, user_ID=session["user_ID"]).first()
+        orders.order_status = "Payment Completed"
+        orders.dis_status = 1
+        med_id = med_id
+        user_ID = session['user_ID']
+        price = med.price
+        seller_id = orders.seller_id
+        user_Cno = orders.user_Cno
+        user_name = orders.user_name
+        user_add = orders.user_add
+        delivery_status = "Not Yet Dispatched"
+        now = date.today()
+        payment_date = delivery_date = now
+        addit1 = Payment(med_id=med_id, user_ID=user_ID, price=price, seller_id=seller_id, user_Cno=user_Cno,
+                        user_name=user_name, user_add=user_add, payment_date=payment_date)
+        addit2 = Delivery(delivery_status=delivery_status, user_ID=user_ID, med_id=med_id, seller_id=seller_id, delivery_date=delivery_date)
+        db.session.add(addit1)
+        db.session.add(addit2)
+        db.session.commit()
+        return redirect("/myorders")
+
+# <------------Payment Equip confirmed------------->
+@app.route("/confirmed/equip/<int:equip_id>", methods=['GET', 'POST'])
+def confirmed_equip(equip_id):
+    if not session.get("user"):
+        return redirect("/")
+    else:
+        equip = Medi_equipment.query.filter_by(equip_id=equip_id).first()
+        equip.status = "Sold"
+        user_ID = session['user_ID']
+        price = equip.discounted_price
+        seller_id = equip.user_ID
+        user = Users.query.filter_by(user_ID=user_ID).first()
+        user_Cno = user.user_Cno
+        user_name = user.user_name
+        user_add = user.user_add
+        delivery_status = "Not Yet Dispatched"
+        now = date.today()
+        payment_date = delivery_date = now
+        addit1 = Payment(equip_id=equip_id, user_ID=user_ID, price=price, seller_id=seller_id, user_Cno=user_Cno,
+                        user_name=user_name, user_add=user_add, payment_date=payment_date)
+        addit2 = Delivery(delivery_status=delivery_status, user_ID=user_ID, equip_id=equip_id, seller_id=seller_id, )
+        db.session.add(addit1)
+        db.session.add(addit2)
+        db.session.commit()
+        return redirect("/myorders")
+
+# <------------My Orders------------->
+@app.route("/myorders", methods=['GET', 'POST'])
+def my_orders():
+    if not session.get("user"):
+        flash("Login First", "error")
+        return redirect("/")
+    else:
+        orders = Order_med.query.filter_by(user_ID=session['user_ID']).all()
+        pay = Payment.query.filter_by(user_ID=session['user_ID']).all()
+        delivery = Delivery.query.filter_by(user_ID=session['user_ID']).all()
+        equip = []
+        for dl in delivery:
+            equipment = Medi_equipment.query.filter_by(equip_id = dl.equip_id).first()
+            equip += [equipment]
+
+        return render_template("allorders.html", params=params, orders=orders, pay=pay, delivery=delivery, equip = equip)
+
+# <------------order med cancel------------->
+@app.route("/myorders/med/cancel/<int:med_id>", methods=['GET', 'POST'])
+def cancel_
 
 # <------------About us------------->
 @app.route("/about", methods = ['GET', 'POST'])
@@ -380,6 +563,7 @@ def contact():
 @app.route("/logout")
 def logout():
     if not session.get("user"):
+        flash("Login First", "error")
         return redirect("/")
     else:
         session.pop('user')
@@ -583,17 +767,12 @@ def prescription_view_lst():
         return redirect("/")
     elif session['role'] == "admin":
         orders = Order_med.query.filter_by(order_status="Prescription Approval Pending...").all()
-        med = []
-        for od in orders:
-            med_id = od.med_id
-            medicine = Medicines.query.filter_by(med_id=med_id).first()
-            med += [medicine]
         users = []
-        for md in med:
-            user_ID = md.user_ID
+        for od in orders:
+            user_ID = od.seller_id
             user = Users.query.filter_by(user_ID=user_ID).first()
             users += [user]
-        return render_template("approvalpreslst.html", params=params, orders=orders, med=med, users=users)
+        return render_template("approvalpreslst.html", params=params, orders=orders, users=users)
     else:
         return redirect("/")
 

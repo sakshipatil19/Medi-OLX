@@ -6,6 +6,10 @@ import json
 from datetime import datetime, timedelta, date
 import razorpay
 import re
+from email.message import EmailMessage
+import ssl
+import smtplib
+
 
 with open('config.json', 'r') as c:
     params = json.load(c)["params"]
@@ -20,6 +24,21 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = params['prod_uri']
     
 db = SQLAlchemy(app)
+
+
+
+
+# @app.route("/result", methods=['POST', 'GET'])
+# def res():
+#     if request.method == 'POST':
+#         receiver = request.form.get("email")
+#         with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+#             smtp.login(sender, password)
+#             smtp.sendmail(sender, receiver, em.as_string())
+#         return render_template("result.html", res="Success")
+#     else:
+#         return render_template("result.html", res="Failure!!")
+# Email Automation
 
 class Users(db.Model):
     user_ID = db.Column(db.Integer, primary_key=True)
@@ -156,6 +175,10 @@ def register():
             user_add = request.form.get("user_add")
             user_Cno = request.form.get("user_Cno")
             user_email = request.form.get("user_email")
+            receiver = request.form.get("user_email")
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+                smtp.login(sender, password)
+                smtp.sendmail(sender, receiver, em.as_string())
             user_pcode = request.form.get("user_pcode")
             user_pwd = request.form.get("user_pwd")
             p = user_pwd
@@ -185,6 +208,7 @@ def register():
                                user_email=user_email, user_pcode=user_pcode, user_pwd=user_pwd, role=role)
                 db.session.add(newreg)
                 db.session.commit()
+                flash("Registered Successfully", "info")
                 return redirect("/")
     else:
         flash("You are already Logged In, Logout first to Register", "info")
@@ -192,19 +216,27 @@ def register():
 
     return render_template('signup.html', params=params)
 
+# Email Automation
+sender = 'mediolxcoop@gmail.com'
+password = 'ccipobbxfzfbhbrj'
+
+subject = 'Registration Successful!!'
+body = """
+        Your Account Registration is Successful and you're good to go!!
+        Happy Shopping!
+        """
+
+em = EmailMessage()
+em['From'] = sender
+
+em['Subject'] = subject
+em.set_content(body)
+context = ssl.create_default_context()
+
+
 # <------------Home Page------------->
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    # med = Medicines.query.filter_by(status="Approved").all()
-    # now = date.today()
-    # now_before_month = now - timedelta(days=31)
-    # for med in med:
-    #     expiry = med.expiry
-    #     if expiry <= now_before_month:
-    #         medicine = Medicines.query.filter_by(status="Approved", expiry=expiry).all()[0:3]
-    #         medi_equipment = Medi_equipment.query.filter_by(status="Approved").all()[0:3]
-    #     else:
-    #         pass
     medicine = Medicines.query.filter_by(status="Approved").all()[0:3]
     medi_equipment = Medi_equipment.query.filter_by(status="Approved").all()[0:3]
     if not session.get("user"):

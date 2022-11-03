@@ -21,8 +21,6 @@ else:
     
 db = SQLAlchemy(app)
 
-
-
 class Users(db.Model):
     user_ID = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(80), nullable = False)
@@ -89,6 +87,7 @@ class Payment(db.Model):
     equip_id = db.Column(db.Integer, nullable=True)
     user_add = db.Column(db.String(250), nullable=False)
     payment_date = db.Column(db.Date, nullable=False)
+    cancel_stats = db.Column(db.Integer, nullable=False)
 
 class Delivery(db.Model):
     delivery_id = db.Column(db.Integer, primary_key=True)
@@ -98,6 +97,11 @@ class Delivery(db.Model):
     equip_id = db.Column(db.Integer, nullable=True)
     seller_id = db.Column(db.Integer, nullable=False)
     order_date = db.Column(db.Date, nullable=False)
+
+class Feedback(db.Model):
+    feedback_id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.String(1000), nullable=False)
+    user_ID = db.Column(db.Integer, nullable=False)
 
 # <------------Store------------->
 @app.route("/medicine", methods=['GET', 'POST'])
@@ -319,17 +323,27 @@ def wishlist():
     else:
         wish = Wishlist.query.filter_by(user_ID = session["user_ID"]).all()
         med = []
-        equip = []
-        for wish in wish:
-            if wish.med_id is not None:
-                med_id = wish.med_id
-                medicine = Medicines.query.filter_by(med_id = med_id, status = "Approved").first()
+        equips = []
+        for wishs in wish:
+            # if wish.med_id is not None:
+            #     med_id = wish.med_id
+            #     medicine = Medicines.query.filter_by(med_id = med_id, status = "Approved").first()
+            #     med += [medicine]
+            # if wish.equip_id is not None:
+            #     equip_id = wish.equip_id
+            #     equipment = Medi_equipment.query.filter_by(equip_id=equip_id, status = "Approved").first()
+            #     equip += [equipment]
+            if wishs.med_id is not None:
+                med_id = wishs.med_id
+                medicine = Medicines.query.filter_by(med_id=med_id, status = "Approved").first()
                 med += [medicine]
-            if wish.equip_id is not None:
-                equip_id = wish.equip_id
+        for wishs in wish:
+            if wishs.equip_id is not None:
+                equip_id = wishs.equip_id
+            # if equip_id is not None:
                 equipment = Medi_equipment.query.filter_by(equip_id=equip_id, status = "Approved").first()
-                equip += [equipment]
-        return render_template("wishlist.html", params=params, med=med, equip=equip)
+                equips += [equipment]
+        return render_template("wishlist.html", params=params, med=med, equips=equips)
 
 # <------------Wishlist Med Add------------->
 @app.route("/wishlist/med/<int:med_id>", methods = ['GET', 'POST'])
@@ -493,10 +507,11 @@ def confirmed_med(med_id):
         user_add = orders.user_add
         delivery_status = "Not Yet Dispatched"
         now = date.today()
-        payment_date = delivery_date = now
+        payment_date = order_date = now
+        cancel_stats = 0
         addit1 = Payment(med_id=med_id, user_ID=user_ID, price=price, seller_id=seller_id, user_Cno=user_Cno,
-                        user_name=user_name, user_add=user_add, payment_date=payment_date)
-        addit2 = Delivery(delivery_status=delivery_status, user_ID=user_ID, med_id=med_id, seller_id=seller_id, delivery_date=delivery_date)
+                        user_name=user_name, user_add=user_add, payment_date=payment_date, cancel_stats=cancel_stats)
+        addit2 = Delivery(delivery_status=delivery_status, user_ID=user_ID, med_id=med_id, seller_id=seller_id, order_date=order_date)
         db.session.add(addit1)
         db.session.add(addit2)
         db.session.commit()
@@ -519,12 +534,15 @@ def confirmed_equip(equip_id):
         user_add = user.user_add
         delivery_status = "Not Yet Dispatched"
         now = date.today()
-        payment_date = delivery_date = now
+        payment_date = order_date = now
+        cancel_stats = 0
         addit1 = Payment(equip_id=equip_id, user_ID=user_ID, price=price, seller_id=seller_id, user_Cno=user_Cno,
-                        user_name=user_name, user_add=user_add, payment_date=payment_date)
-        addit2 = Delivery(delivery_status=delivery_status, user_ID=user_ID, equip_id=equip_id, seller_id=seller_id, )
+                        user_name=user_name, user_add=user_add, payment_date=payment_date, cancel_stats=cancel_stats)
+        addit2 = Delivery(delivery_status=delivery_status, user_ID=user_ID, equip_id=equip_id, seller_id=seller_id, order_date=order_date)
+        delit = Wishlist.query.filter_by(equip_id=equip_id, user_ID=session['user_ID']).first()
         db.session.add(addit1)
         db.session.add(addit2)
+        db.session.delete(delit)
         db.session.commit()
         return redirect("/myorders")
 
@@ -545,19 +563,84 @@ def my_orders():
 
         return render_template("allorders.html", params=params, orders=orders, pay=pay, delivery=delivery, equip = equip)
 
-# <------------order med cancel------------->
+# <------------Order Med Cancel------------->
 @app.route("/myorders/med/cancel/<int:med_id>", methods=['GET', 'POST'])
-def cancel_
+def cancel_med(med_id):
+    if not session.get("user"):
+        flash("Login First", "error")
+        return redirect("/")
+    else:
+        delit = Delivery.query.filter_by(med_id=med_id, user_ID=session['user_ID']).first()
+        if delit.delivery_status != "Not Yet Dispatched":
+            flash("Sorry, you cannot cancel your order now.", "error")
+            return redirect("/myorders")
+        else:
+            pay = Payment.query.filter_by(med_id=med_id, user_ID=session['user_ID']).first()
+            pay.cancel_stats = 1
+            orders = Order_med.query.filter_by(med_id=med_id, user_ID=session['user_ID']).first()
+            orders.order_status = "Order Cancelled"
+            med = Medicines.query.filter_by(med_id=med_id).first()
+            delivery = Delivery.query.filter_by(med_id=med_id, user_ID=session['user_ID']).first()
+            delivery.delivery_status = "Order Cancelled"
+            med.status = "Approved"
+            db.session.commit()
+            flash("You have cancelled your order", "info")
+            return redirect('/myorders')
+
+# <------------order med cancel------------->
+@app.route("/myorders/equip/cancel/<int:equip_id>", methods=['GET', 'POST'])
+def cancel_equip(equip_id):
+    if not session.get("user"):
+        flash("Login First", "error")
+        return redirect("/")
+    else:
+        delit = Delivery.query.filter_by(equip_id=equip_id, user_ID=session['user_ID']).first()
+        if delit.delivery_status != "Not Yet Dispatched":
+            flash("Sorry, you cannot cancel your order now.", "error")
+            return redirect("/myorders")
+        else:
+            pay = Payment.query.filter_by(equip_id=equip_id, user_ID=session['user_ID']).first()
+            pay.cancel_stats = 1
+            equip = Medi_equipment.query.filter_by(equip_id=equip_id).first()
+            equip.status = "Approved"
+            delivery = Delivery.query.filter_by(equip_id=equip_id, user_ID=session['user_ID']).first()
+            delivery.delivery_status = "Order Cancelled"
+            db.session.commit()
+            flash("You have cancelled your order", "info")
+            return redirect('/myorders')
+
+
+
+
+
+
+
+
 
 # <------------About us------------->
 @app.route("/about", methods = ['GET', 'POST'])
 def about():
     return render_template("about.html", params=params)
 
-# <------------Contact Us------------->
-@app.route("/contact", methods = ['GET', 'POST'])
-def contact():
-    return render_template("contact.html", params=params)
+# <------------Feedback------------->
+@app.route("/feedback", methods = ['GET', 'POST'])
+def feedback():
+    return render_template("feedback.html", params=params)
+
+@app.route("/feedback/submit", methods = ['GET', 'POST'])
+def feedback_sub():
+    if not session.get("user"):
+        flash("Login First", "error")
+        return redirect("/")
+    else:
+        if request.method == "POST":
+            message = request.form.get("message")
+            user_ID=session['user_ID']
+            mesg = Feedback(message=message, user_ID=user_ID)
+            db.session.add(mesg)
+            db.session.commit()
+            flash("Thankyou for your Valuable Feedback", "info")
+            return redirect("/feedback")
 
 # <------------Logout Mechanism------------->
 @app.route("/logout")
@@ -567,6 +650,7 @@ def logout():
         return redirect("/")
     else:
         session.pop('user')
+        flash("Logged out Successfully", "info")
         return redirect('/')
 
 
@@ -800,6 +884,8 @@ def pres_approve(order_id):
         med.status = "Payment Pending..."
         db.session.commit()
         return redirect("/prescription/view")
+    else:
+        return redirect("/")
 
 # <--------------Prescription Reject-------------->
 @app.route("/pres/reject/<int:order_id>", methods=['GET', 'POST'])
@@ -814,6 +900,46 @@ def pres_reject(order_id):
         med.status = "Approved"
         db.session.commit()
         return redirect("/prescription/view")
+    else:
+        return redirect("/")
+
+# <--------------Feedback View-------------->
+@app.route("/admin/feedback/view", methods=['GET', 'POST'])
+def feedback_view():
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        fb = Feedback.query.filter_by().all()
+        users = []
+        for feed in fb:
+            user_ID = feed.user_ID
+            user = Users.query.filter_by(user_ID=user_ID).first()
+            users += [user]
+        return render_template("adminfeedback.html", params=params, fb=fb, users=users)
+    else:
+        return redirect("/")
+
+# <--------------Payment Details-------------->
+@app.route("/admin/payment/view", methods=['GET', 'POST'])
+def payment_view():
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "admin":
+        pay = Payment.query.filter_by().all()
+        med = []
+        equip = []
+        for py in pay:
+            if py.med_id is not None:
+                med_id = py.med_id
+                medicine = Medicines.query.filter_by(med_id=med_id).first()
+                med += [medicine]
+            if py.equip_id is not None:
+                equip_id = py.equip_id
+                equipment = Medi_equipment.query.filter_by(equip_id=equip_id).first()
+                equip += [equipment]
+        return render_template("adminpaymentdetails.html", params=params, pay=pay, med=med, equip=equip)
+    else:
+        return redirect("/")
 
 if __name__ == '__main__':
     app.run(debug = True)

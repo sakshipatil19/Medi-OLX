@@ -1,4 +1,5 @@
-from datetime import date
+txt = 50800
 
-now = date.today()
-print(now)
+x = str(txt).isdigit()
+
+print(x)

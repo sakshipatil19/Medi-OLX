@@ -61,6 +61,7 @@ class Wishlist(db.Model):
     user_ID = db.Column(db.Integer, nullable=False)
     med_id = db.Column(db.Integer, nullable=True)
     equip_id = db.Column(db.Integer, nullable=True)
+    wish_stats = db.Column(db.Integer, nullable=False)
 
 class Order_med(db.Model):
     order_id = db.Column(db.Integer, primary_key=True)
@@ -130,17 +131,19 @@ def signup():
                     session['user_ID'] = memb.user_ID
                     if memb.role == "admin":
                         return redirect('/admin')
+                    elif memb.role == "delivery":
+                        return redirect('/delivery')
                     else:
                         flash("You have logged in ", "info")
                         return redirect("/")
                 else:
-                    flash("Password Did not matched", "error")
+                    flash("Email & Password Did not matched", "error")
                     return redirect('/signin')
             else:
-                flash("Your Email is not Registered. Please Sign Up", "info")
+                flash("Your Email is not Registered. Please Register", "error")
                 return redirect('/signin')
     else:
-        flash("You are already Logged In, Logout first.", "info")
+        flash("You are already Logged In, Logout first.", "error")
         return redirect("/")
     return render_template('login.html', params=params)
 
@@ -261,6 +264,7 @@ def sell_medi_add():
             f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
             f1 = request.files['file_name1']
             f1.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f1.filename)))
+            flash("Prescription Uploaded Successfully", "info")
             return redirect("/")
 
 # <------------Equipment Sell Page------------->
@@ -325,24 +329,17 @@ def wishlist():
         med = []
         equips = []
         for wishs in wish:
-            # if wish.med_id is not None:
-            #     med_id = wish.med_id
-            #     medicine = Medicines.query.filter_by(med_id = med_id, status = "Approved").first()
-            #     med += [medicine]
-            # if wish.equip_id is not None:
-            #     equip_id = wish.equip_id
-            #     equipment = Medi_equipment.query.filter_by(equip_id=equip_id, status = "Approved").first()
-            #     equip += [equipment]
-            if wishs.med_id is not None:
-                med_id = wishs.med_id
-                medicine = Medicines.query.filter_by(med_id=med_id, status = "Approved").first()
-                med += [medicine]
+            if wishs.wish_stats == 0:
+                if wishs.med_id is not None:
+                    med_id = wishs.med_id
+                    medicine = Medicines.query.filter_by(med_id=med_id, status = "Approved").first()
+                    med += [medicine]
         for wishs in wish:
-            if wishs.equip_id is not None:
-                equip_id = wishs.equip_id
-            # if equip_id is not None:
-                equipment = Medi_equipment.query.filter_by(equip_id=equip_id, status = "Approved").first()
-                equips += [equipment]
+            if wishs.wish_stats == 0:
+                if wishs.equip_id is not None:
+                    equip_id = wishs.equip_id
+                    equipment = Medi_equipment.query.filter_by(equip_id=equip_id, status = "Approved").first()
+                    equips += [equipment]
         return render_template("wishlist.html", params=params, med=med, equips=equips)
 
 # <------------Wishlist Med Add------------->
@@ -355,7 +352,8 @@ def wishlist_med_add(med_id):
         med_id = med_id
         user_ID = session["user_ID"]
         type_of = "Medicine"
-        add_med_wish = Wishlist(type_of=type_of, user_ID=user_ID, med_id=med_id)
+        wish_stats = 0
+        add_med_wish = Wishlist(type_of=type_of, user_ID=user_ID, med_id=med_id, wish_stats = wish_stats)
         db.session.add(add_med_wish)
         db.session.commit()
         return redirect("/wishlist")
@@ -381,7 +379,8 @@ def wishlist_equip_add(equip_id):
         equip_id = equip_id
         user_ID = session["user_ID"]
         type_of = "Equipment"
-        add_equip_wish = Wishlist(type_of=type_of, user_ID=user_ID, equip_id=equip_id)
+        wish_stats = 0
+        add_equip_wish = Wishlist(type_of=type_of, user_ID=user_ID, equip_id=equip_id, wish_stats=wish_stats)
         db.session.add(add_equip_wish)
         db.session.commit()
         return redirect("/wishlist")
@@ -429,6 +428,10 @@ def uploaded_pres():
             db.session.add(addit)
             med.status = "Prescription Approval Pending..."
             deletewish = Wishlist.query.filter_by(med_id=med_id, user_ID=session["user_ID"]).first()
+            wish = Wishlist.query.filter_by(med_id=med_id).all()
+            for wishes in wish:
+                wishes.wish_stats = 1
+                db.session.commit()
             db.session.delete(deletewish)
             db.session.commit()
             f = request.files['file_name']
@@ -540,6 +543,10 @@ def confirmed_equip(equip_id):
                         user_name=user_name, user_add=user_add, payment_date=payment_date, cancel_stats=cancel_stats)
         addit2 = Delivery(delivery_status=delivery_status, user_ID=user_ID, equip_id=equip_id, seller_id=seller_id, order_date=order_date)
         delit = Wishlist.query.filter_by(equip_id=equip_id, user_ID=session['user_ID']).first()
+        wish = Wishlist.query.filter_by(equip_id=equip_id).all()
+        for wishes in wish:
+            wishes.wish_stats = 1
+            db.session.commit()
         db.session.add(addit1)
         db.session.add(addit2)
         db.session.delete(delit)
@@ -608,14 +615,6 @@ def cancel_equip(equip_id):
             db.session.commit()
             flash("You have cancelled your order", "info")
             return redirect('/myorders')
-
-
-
-
-
-
-
-
 
 # <------------About us------------->
 @app.route("/about", methods = ['GET', 'POST'])
@@ -938,6 +937,48 @@ def payment_view():
                 equipment = Medi_equipment.query.filter_by(equip_id=equip_id).first()
                 equip += [equipment]
         return render_template("adminpaymentdetails.html", params=params, pay=pay, med=med, equip=equip)
+    else:
+        return redirect("/")
+
+# <--------------Delivery-------------->
+
+# <--------------Delivery Home-------------->
+@app.route("/delivery", methods=['GET', 'POST'])
+def delivery_home():
+    if not session.get("user"):
+        return redirect("/")
+    elif session['role'] == "delivery":
+        members = Users.query.filter_by(user_email=session['user']).all()
+        delivery = Delivery.query.filter_by().all()
+        user = []
+        med = []
+        seller = []
+        for deliver in delivery:
+            if deliver.med_id is not None:
+                user_ID = deliver.user_ID
+                memb = Users.query.filter_by(user_ID=user_ID).first()
+                user += [memb]
+                med_id = deliver.med_id
+                medicine = Medicines.query.filter_by(med_id=med_id).first()
+                med = [medicine]
+                seller_id = deliver.seller_id
+                membs = Users.query.filter_by(user_ID=seller_id).first()
+                seller += [membs]
+        user1 = []
+        seller1 = []
+        equip1 = []
+        for deliver1 in delivery:
+            if deliver1.equip_id is not None:
+                user_ID1 = deliver1.user_ID
+                memb1 = Users.query.filter_by(user_ID=user_ID1).first()
+                user1 += [memb1]
+                equip_id1 = deliver1.equip_id
+                equipment1 = Medi_equipment.query.filter_by(equip_id=equip_id1).first()
+                equip1 = [equipment1]
+                seller_id1 = deliver1.seller_id
+                membs1 = Users.query.filter_by(user_ID=seller_id1).first()
+                seller1 += [membs1]
+        return render_template("deliveryhome.html", params=params, members=members, user=user, med=med, seller=seller, delivery=delivery, equip1=equip1, user1=user1, seller1=seller1)
     else:
         return redirect("/")
 

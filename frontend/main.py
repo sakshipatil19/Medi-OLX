@@ -216,14 +216,18 @@ def register():
 
     return render_template('signup.html', params=params)
 
-# Email Automation
+# Email Automation Register
 sender = 'mediolxcoop@gmail.com'
 password = 'ccipobbxfzfbhbrj'
 
 subject = 'Registration Successful!!'
 body = """
         Your Account Registration is Successful and you're good to go!!
-        Happy Shopping!
+        Thankyou
+        .
+        .
+        Regards
+        Medi-Olx
         """
 
 em = EmailMessage()
@@ -233,6 +237,45 @@ em['Subject'] = subject
 em.set_content(body)
 context = ssl.create_default_context()
 
+# Prod Approval automation
+subject1 = 'Admin Approval!!'
+body1 = """
+        Your Product got approved by the Admin and it has been listed in the website!!
+        Thankyou
+        .
+        .
+        Regards
+        Medi-Olx
+        """
+
+em1 = EmailMessage()
+em1['From'] = sender
+
+em1['Subject'] = subject1
+em1.set_content(body1)
+context1 = ssl.create_default_context()
+
+# Prod Rejection automation
+subject2 = 'Admin Rejection!!'
+body2 = """
+        Your product got rejected by the Admin due to anyof the reason.
+        1. No proper pic uploaded
+        2. Expired
+        3. Wrong Information
+        4. Asking for more price
+        Sorry!!!
+        .
+        .
+        Regards
+        Medi-Olx
+        """
+
+em2 = EmailMessage()
+em2['From'] = sender
+
+em2['Subject'] = subject2
+em2.set_content(body2)
+context2 = ssl.create_default_context()
 
 # <------------Home Page------------->
 @app.route("/", methods=['GET', 'POST'])
@@ -818,6 +861,12 @@ def med_approve_done(med_id):
         med = Medicines.query.filter_by(med_id = med_id).first()
         med.status = "Approved"
         db.session.commit()
+        user_ID = med.user_ID
+        users = Users.query.filter_by(user_ID=user_ID).first()
+        receiver = users.user_email
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context1) as smtp:
+            smtp.login(sender, password)
+            smtp.sendmail(sender, receiver, em1.as_string())
         return redirect("/med/approval")
     else:
         return redirect("/")
@@ -831,6 +880,12 @@ def med_approve_reject(med_id):
         med = Medicines.query.filter_by(med_id = med_id).first()
         med.status = "Rejected"
         db.session.commit()
+        user_ID = med.user_ID
+        users = Users.query.filter_by(user_ID=user_ID).first()
+        receiver = users.user_email
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context2) as smtp:
+            smtp.login(sender, password)
+            smtp.sendmail(sender, receiver, em2.as_string())
         return redirect("/med/approval")
     else:
         return redirect("/")
@@ -858,6 +913,12 @@ def equip_approve_done(equip_id):
         equip = Medi_equipment.query.filter_by(equip_id = equip_id).first()
         equip.status = "Approved"
         db.session.commit()
+        user_ID = equip.user_ID
+        users = Users.query.filter_by(user_ID=user_ID).first()
+        receiver = users.user_email
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context1) as smtp:
+            smtp.login(sender, password)
+            smtp.sendmail(sender, receiver, em1.as_string())
         return redirect("/equip/approval")
     else:
         return redirect("/")
@@ -871,6 +932,12 @@ def equip_approve_reject(equip_id):
         equip = Medi_equipment.query.filter_by(equip_id = equip_id).first()
         equip.status = "Rejected"
         db.session.commit()
+        user_ID = equip.user_ID
+        users = Users.query.filter_by(user_ID=user_ID).first()
+        receiver = users.user_email
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context2) as smtp:
+            smtp.login(sender, password)
+            smtp.sendmail(sender, receiver, em2.as_string())
         return redirect("/equip/approval")
     else:
         return redirect("/")
@@ -981,36 +1048,29 @@ def delivery_home():
         return redirect("/")
     elif session['role'] == "delivery":
         members = Users.query.filter_by(user_email=session['user']).all()
-        delivery = Delivery.query.filter_by().all()
-        user = []
+        pay = Payment.query.filter_by().all()
+        deliverym = []
+        deliverye = []
         med = []
-        seller = []
-        for deliver in delivery:
-            if deliver.med_id is not None:
-                user_ID = deliver.user_ID
-                memb = Users.query.filter_by(user_ID=user_ID).first()
-                user += [memb]
-                med_id = deliver.med_id
+        equip = []
+        for p_m in pay:
+            if p_m.med_id is not None:
+                med_id = p_m.med_id
+                deliver = Delivery.query.filter_by(med_id=med_id).first()
+                deliverym += [deliver]
                 medicine = Medicines.query.filter_by(med_id=med_id).first()
-                med = [medicine]
-                seller_id = deliver.seller_id
-                membs = Users.query.filter_by(user_ID=seller_id).first()
-                seller += [membs]
-        user1 = []
-        seller1 = []
-        equip1 = []
-        for deliver1 in delivery:
-            if deliver1.equip_id is not None:
-                user_ID1 = deliver1.user_ID
-                memb1 = Users.query.filter_by(user_ID=user_ID1).first()
-                user1 += [memb1]
-                equip_id1 = deliver1.equip_id
-                equipment1 = Medi_equipment.query.filter_by(equip_id=equip_id1).first()
-                equip1 = [equipment1]
-                seller_id1 = deliver1.seller_id
-                membs1 = Users.query.filter_by(user_ID=seller_id1).first()
-                seller1 += [membs1]
-        return render_template("deliveryhome.html", params=params, members=members, user=user, med=med, seller=seller, delivery=delivery, equip1=equip1, user1=user1, seller1=seller1)
+                med += [medicine]
+
+
+            if p_m.equip_id is not None:
+                equip_id = p_m.equip_id
+                deliver1 = Delivery.query.filter_by(equip_id=equip_id).first()
+                deliverye += [deliver1]
+                equipment = Medi_equipment.query.filter_by(equip_id=equip_id).first()
+                equip += [equipment]
+
+        return render_template("deliveryhome.html", params=params, members=members, pay=pay, deliverym=deliverym, deliverye=deliverye,
+                               med = med, equip=equip)
     else:
         return redirect("/")
 

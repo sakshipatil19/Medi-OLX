@@ -147,40 +147,44 @@
         <h2 style="color: black;" align="center">Medicines</h2>
         <thead>
           <tr style="color: black;" align="center">
-            <th scope="col">Buyer Name</th>
-            <th scope="col">Buyer Contact</th>
+            <th scope="col">Buyer ID</th>
             <th scope="col">Medicine Name</th>
-            <th scope="col">Seller Name</th>
-            <th scope="col">Seller Contact</th>
+            <th scope="col">Seller ID</th>
             <th scope="col">Status</th>
             <th scope="col">Update</th>
           </tr>
         </thead>
         <tbody>
           
-          {% for delivery in delivery %}
+          
+          {% for pay in pay %}
+          {% for deliverym in deliverym %}
+          {% if pay.med_id == deliverym.med_id %}
+          {% for med in med %}
+          {% if deliverym.med_id == med.med_id %}
+          
+          
           <tr align="center">
-            {% for user in user %}
-            {%if delivery.user_ID == user.user_ID %}
-            <th align="center">{{ user.user_name }}</th>
-            <td align="center">{{ user.user_Cno }}</td>
-            {% endif %}
-            {% endfor %}
-            {% for med in med %}
-            {%if delivery.med_id == med.med_id %}
+      
+            <th align="center">{{ pay.user_ID }}</th>
+            
             <td align="center">{{ med.name }}</td>
-            {% endif %}
-            {% endfor %}
-            {% for seller in seller %}
-            {%if delivery.seller_id == seller.user_ID %}
-            <td align="center">{{ seller.user_name }}</td>
-            <td align="center">{{ seller.user_Cno }}</td>
-            {% endif %}
-            {% endfor %}
-            <td align="center">{{ delivery.delivery_status }}</td>
-            <td align="center"><a href="/pres/view/">View</a></td>
+            
+            <td align="center">{{ pay.seller_id }}</td>
+            
+            
+            <td align="center">{{ deliverym.delivery_status }}</td>
+            <td align="center">
+              <a href="/pres/view/" style="padding-right: 10px;">Collected</a>
+              <a href="/pres/view/" style="padding-left: 10px;">Delivered</a>
+            </td>
           </tr>
           
+          
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+          {% endfor %}
           {% endfor %}
         </tbody>
       </table>
@@ -189,34 +193,41 @@
         <h2 style="color: black;" align="center">Equipments</h2>
         <thead>
           <tr style="color: black;" align="center">
-            <th scope="col">Buyer Name</th>
-            <th scope="col">Buyer Contact</th>
-            <th scope="col">Equipment Name</th>
-            <th scope="col">Seller Name</th>
-            <th scope="col">Seller Contact</th>
+            <th scope="col">Buyer ID</th>
+            <th scope="col">Medicine Name</th>
+            <th scope="col">Seller ID</th>
             <th scope="col">Status</th>
             <th scope="col">Update</th>
           </tr>
         </thead>
         <tbody>
           
-          {% for delivery in delivery %}
-          {% for user1 in user1 %}
-          {% for equip1 in equip1 %}
-          {% for seller1 in seller1 %}
-          {% if delivery.user_ID == user1.user_ID and delivery.equip_id == equip1.equip_id and delivery.seller_id == seller1.user_ID %}
+          {% for pay in pay %}
+          {% for deliverye in deliverye %}
+          {% if pay.equip_id == deliverye.equip_id %}
+          {% for equip in equip %}
+          {% if deliverye.equip_id == equip.equip_id %}
+          
+          
           <tr align="center">
-            <th align="center">{{ user1.user_name }}</th>
-            <td align="center">{{ user1.user_Cno }}</td>
-            <td align="center">{{ equip1.name }}</td>
-            <td align="center">{{ seller1.user_name }}</td>
-            <td align="center">{{ seller1.user_Cno }}</td>
-            <td align="center">{{ delivery.delivery_status }}</td>
-            <td align="center"><a href="/pres/view/">View</a></td>
+      
+            <th align="center">{{ pay.user_ID }}</th>
+            
+            <td align="center">{{ equip.name }}</td>
+            
+            <td align="center">{{ pay.seller_id }}</td>
+            
+            
+            <td align="center">{{ deliverye.delivery_status }}</td>
+            <td align="center">
+              <a href="/pres/view/" style="padding-right: 10px;">Collected</a>
+              <a href="/pres/view/" style="padding-left: 10px;">Delivered</a>
+            </td>
           </tr>
+          
           {% endif %}
           {% endfor %}
-          {% endfor %}
+          {% endif %}
           {% endfor %}
           {% endfor %}
         </tbody>

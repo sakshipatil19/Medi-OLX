@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Medi-OLX</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link href="https://fonts.googleapis.com/css?family=Rubik:400,700|Crimson+Text:400,400i" rel="stylesheet">
+  <link href="{{url_for('static', filename = 'fonts/icomoon/style.css')}}" rel="stylesheet" />
+
+  <link href="{{url_for('static', filename = 'css/bootstrap.min.css')}}" rel="stylesheet" />
+  <link href="{{url_for('static', filename = 'css/magnific-popup.css')}}" rel="stylesheet" />
+  <link href="{{url_for('static', filename = 'css/jquery-ui.css')}}" rel="stylesheet" />
+  <link href="{{url_for('static', filename = 'css/owl.carousel.min.css')}}" rel="stylesheet" />
+  <link href="{{url_for('static', filename = 'css/owl.theme.default.min.css')}}" rel="stylesheet" />
+
+  <link href="{{url_for('static', filename = 'css/aos.css')}}" rel="stylesheet" />
+  <link href="{{url_for('static', filename = 'css/style.css')}}" rel="stylesheet" />
+
+</head>
+
+<body>
+
+  <div class="site-wrap">
+
+
+    <div class="site-navbar py-2">
+
+      <div class="search-wrap">
+        <div class="container">
+          <a href="#" class="search-close js-search-close"><span class="icon-close2"></span></a>
+          <form action="#" method="post">
+            <input type="text" class="form-control" placeholder="Search keyword and hit enter...">
+          </form>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="logo">
+            <div class="site-logo">
+              {% set fname = 'images/' + params['logo'] %}
+              <a href="/admin" class="js-logo-clone"> <img src="{{url_for('static', filename = fname)}}" alt=""> </a>
+            </div>
+          </div>
+          <div class="main-nav d-none d-lg-block">
+            <nav class="site-navigation text-right text-md-center" role="navigation">
+              <ul class="site-menu js-clone-nav d-none d-lg-block">
+                <li class="active"><a href="/delivery">Home</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/logout">Logout</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="icons">
+            
+            <a href="cart.html" class="icons-btn d-inline-block bag">
+              
+            </a>
+            <a href="#" class="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"><span
+                class="icon-menu"></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% block body %}
+
+    {% endblock %}
+    <hr>
+      <footer class="site-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+  
+              <div class="block-7">
+                <h3 class="footer-heading mb-4">About Us</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius quae reiciendis distinctio voluptates
+                  sed dolorum excepturi iure eaque, aut unde.</p>
+              </div>
+  
+            </div>
+            <div class="col-lg-3 mx-auto mb-5 mb-lg-0">
+              <h3 class="footer-heading mb-4">Quick Links</h3>
+              <ul class="list-unstyled">
+                <li><a href="#">Email</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">Instagram</a></li>
+                <li><a href="#">LinkedIn</a></li>
+              </ul>
+            </div>
+  
+            <div class="col-md-6 col-lg-3">
+              <div class="block-5 mb-5">
+                <h3 class="footer-heading mb-4">Contact Info</h3>
+                <ul class="list-unstyled">
+                  <li class="address">Hashu Adwani Memorial Complex, Collector's Colony, Chembur, Mumbai, Maharashtra 400074</li>
+                  <li class="phone"><a href="#">022 6153 2500</a></li>
+                  <li class="email">vesit.admission@ves.ac.in</li>
+                </ul>
+              </div>
+  
+  
+            </div>
+          </div>
+          <div class="row pt-5 mt-5 text-center">
+            <div class="col-md-12">
+              <p>
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                Copyright &copy;
+                <script>document.write(new Date().getFullYear());</script> All rights reserved | MediOLX
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+              </p>
+            </div>
+  
+          </div>
+        </div>
+      </footer>
+    </div>
+  
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/aos.js"></script>
+  
+    <script src="js/main.js"></script>
+  
+  </body>
+  
+  </html>

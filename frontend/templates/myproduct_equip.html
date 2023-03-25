@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<style>
+  img{
+    height=200px;
+    width=200px;
+  }
+</style>
+<div class="site-section">
+<div class="container">
+
+<div class="row">
+  {% for equipments in equipments %}
+  {% set img_equip = 'images/' + equipments.image_name %}
+  <div class="col-sm-6 col-lg-4 text-center item mb-4">
+    <a href="/equipment/{{ equipments.equip_id }}"> <img src="{{ url_for('static', filename = img_equip) }}" alt="Image" style="height: 250px; width: 200px;"></a>
+    <h3 class="text-dark"><a href="/equipment/{{ equipments.equip_id }}">{{ equipments.name }}</a></h3>
+    <p class="price"><del>₹{{ equipments.original_price }}</del> &mdash; ₹{{ equipments.discounted_price }}</p>
+    <p class="price">{{ equipments.status }}</p>
+    <a href="/equipment/remove/{{ equipments.equip_id }}">Remove/Delete</a>
+  </div>
+  {% endfor %}
+</div>
+<div class="row mt-5">
+  <div class="col-md-12 text-center">
+    <div class="site-block-27">
+      <ul>
+        <li><a href="#">&lt;</a></li>
+        <li class="active"><span>1</span></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li><a href="#">&gt;</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+{% endblock %} 

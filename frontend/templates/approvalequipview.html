@@ -1,0 +1,96 @@
+{% extends "layoutadmin.html" %}
+
+		{% block body %}
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          {% for equipment in equipment %}
+          {% set img_med = 'images/' + equipment.image_name %}
+          <div class="col-md-5 mr-auto">
+            <div class="border text-center">
+              <img src="{{url_for('static', filename = img_med)}}" alt="Image" class="img-fluid p-5" style="height: 500px; width: 300px;">
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <h2 class="text-black">{{equipment.name}}</h2>
+            <p>{{equipment.description}}</p>
+            
+
+            <p><del>₹{{ equipment.original_price }}</del>  <strong class="text-primary h4">₹{{ equipment.discounted_price }}</strong></p>
+            <div class="row">
+                <div class="col-2" style="padding-right: 60px;">
+                    <p><a href="/equipment/approve/{{ equipment.equip_id }}" class="buy-now btn btn-sm height-auto px-4 py-3 btn-primary">Approve</a></p>
+                </div>
+                <div class="col-2" style="padding-left: 60px;">
+                    <p><a href="/equipment/reject/{{ equipment.equip_id }}" class="buy-now btn btn-sm height-auto px-4 py-3 btn-primary">Reject</a></p>
+                </div>
+            </div>
+
+            <div class="mt-5">
+              <ul class="nav nav-pills mb-3 custom-pill" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
+                    aria-controls="pills-home" aria-selected="true">Sellers Information</a>
+                </li>
+               
+              </ul>
+              <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                  <table class="table custom-table">
+                    <thead>
+                      <th>Name</th>
+                      <th>Address</th>
+                      <th>Contact</th>
+                      <th>Email</th>
+                    </thead>
+                    <tbody>
+                      {% for users in users %}
+                      <tr>
+                        <th scope="row">{{ users.user_name }}</th>
+                        <td>{{ users.user_add }}, {{users.user_pcode}}</td>
+                        <td>{{ users.user_Cno }}</td>
+                        <td>{{ users.user_email }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+            
+                  <table class="table custom-table">
+            
+                    <tbody>
+                      <tr>
+                        <td>HPIS CODE</td>
+                        <td class="bg-light">999_200_40_0</td>
+                      </tr>
+                      <tr>
+                        <td>HEALTHCARE PROVIDERS ONLY</td>
+                        <td class="bg-light">No</td>
+                      </tr>
+                      <tr>
+                        <td>LATEX FREE</td>
+                        <td class="bg-light">Yes, No</td>
+                      </tr>
+                      <tr>
+                        <td>MEDICATION ROUTE</td>
+                        <td class="bg-light">Topical</td>
+                      </tr>
+                    </tbody>
+                  </table>
+            
+                </div>
+            
+              </div>
+            </div>
+
+    
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {% endblock %} 

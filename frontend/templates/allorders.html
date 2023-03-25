@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<hr>
+    <div class="site-section" style="padding: 2em 0;">
+      <div class="container">
+        <div class="row mb-5">
+          <form class="col-md-12" method="post">
+            <div class="site-blocks-table">
+                <p></p>
+              <table class="table table-bordered">
+                <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                  <symbol id="check-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                  </symbol>
+                  <symbol id="info-fill" viewBox="0 0 16 16">
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                  </symbol>
+                  <symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                  </symbol>
+                </svg>
+                {% with messages = get_flashed_messages(category_filter=["info"]) %}
+      {% if messages %}
+        {% for msg in messages %}
+        <div class="alert alert-success d-flex align-items-center" role="alert" style="height:50px; margin-bottom: 0.3rem;" >
+          <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Success:" style="width:30px;"><use xlink:href="#check-circle-fill"/></svg>
+          <div style="padding-left:20px;">
+             {{ msg }}
+          </div>
+        </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+            {% with messages = get_flashed_messages(category_filter=["error"]) %}
+                            {% if messages %}
+                            {% for msg in messages %}
+                            <div class="alert alert-warning d-flex align-items-center" role="alert" style="height:50px; margin-bottom: 0.3rem;">
+                              <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:" style="width:30px;"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                <div style="padding-left:20px;">
+                                {{ msg }}
+                                </div>
+                            </div>
+                      {% endfor %}
+                      {% endif %}
+                    {% endwith %}
+                <h1 align="center" style="font-size: 75px;">My Orders</hr>
+                <p align="center" style="font-size: 20px; color: red;">You can cancel your order before dispatch</p>
+                <hr>
+                <h1 style="color: black;" align="center">MEDICINES</h1>
+                <thead>
+                  <tr>
+                    <th class="product-name">Product Name</th>
+                    <th class="product-price">Price</th>
+                    <th class="product-price">Order Date</th>
+                    <th class="product-price">Status</th>
+                    <th class="product-remove">Cancel Order</th>
+                    
+                  </tr>
+                </thead>
+                {% for delivery in delivery %}
+                {% for orders in orders %}
+                {% if delivery.med_id == orders.med_id %}
+                <tbody>
+                  <tr>
+                    
+                    <td class="product-name">
+                      <h2 class="h5 text-black">{{ orders.med_name }}</h2>
+                    </td>
+                    <td>₹{{ orders.price }}</td>
+                    <td>{{ delivery.order_date }}</td>
+                    
+                    <td>{{ delivery.delivery_status }}</td>
+                    <td><a href="/myorders/med/cancel/{{ delivery.med_id }}" class="btn btn-primary height-auto btn-sm">X</a></td>
+                  </tr>
+                  {% endif %}
+                {% endfor %}
+                {% endfor %}
+                </tbody>
+              </table>
+              <table class="table table-bordered">
+                <h1 style="color: black; padding-top:1em;" align="center">EQUIPMENT</h1>
+                <thead>
+                  <tr>
+                    <th class="product-name">Product Name</th>
+                    <th class="product-price">Price</th>
+                    <th class="product-price">Order Date</th>
+                    <th class="product-price">Status</th>
+                    <th class="product-remove">Cancel Order</th>
+                  </tr>
+                </thead>
+                {% for delivery in delivery %}
+                {% for equip in equip %}
+                {% if delivery.equip_id == equip.equip_id %}
+                <tbody>
+                  <tr>
+                    
+                    <td class="product-name">
+                      <h2 class="h5 text-black">{{ equip.name }}</h2>
+                    </td>
+                    <td>₹{{ equip.discounted_price }}</td>
+                    <td>{{ delivery.order_date }}</td>
+                    
+                    <td>{{ delivery.delivery_status }}</td>
+                    <td><a href="/myorders/equip/cancel/{{ delivery.equip_id }}" class="btn btn-primary height-auto btn-sm">X</a></td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+
+    {% endblock %} 
